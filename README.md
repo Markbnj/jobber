@@ -1,5 +1,5 @@
 # jobber
-A container scheduling job service for kubernetes and native docker use.
+A container scheduling job service for kubernetes and docker compose.
 
 ##Description
 
