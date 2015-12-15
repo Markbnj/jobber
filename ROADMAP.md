@@ -4,7 +4,7 @@ Major components:
 
 - redis; stores the job definitions and run results
 - cron; maintains the schedule and triggers jobs
-- REST API; python flask; provides methods for listing, adding, and removing jobs
+- REST API; python flask; provides methods for listing, adding, and removing jobs, and getting reports
 - Logging endpoint; provides an endpoint to recieve syslog messages from jobs
 - Job runner; python; invoked by cron, launches job containers, monitors run results
 - Orchestration layer; python; wrapper around docker compose and kubernetes APIs.
