@@ -172,8 +172,6 @@ definitions:
         type: string
       fields:
         type: string
-
-paths:
 paths:
   /jobs:
     get:
@@ -182,6 +180,7 @@ paths:
         Returns a list of all currently scheduled jobs.
       tags:
         - Jobs
+      operationId: jobber.get_jobs
       responses:
         '200':
           description: An array of Job objects
@@ -193,13 +192,13 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-    
     post:
       summary: Add a new scheduled job
       description: |
         Adds a new scheduled job to the database.
       tags:
         - Jobs
+      operationId: jobber.post_jobs
       parameters:
         - name: job
           schema:
@@ -217,7 +216,6 @@ paths:
           description: unexpected error
           schema:
             $ref: '#/definitions/Error'
-            
   /jobs/report:
     get:
       summary: Return a list of job results
@@ -227,6 +225,7 @@ paths:
       tags:
         - Jobs
         - Reports
+      operationId: jobber.get_jobs_report
       parameters:
         - name: start
           type: string
@@ -260,6 +259,7 @@ paths:
         Returns the description of a specific job
       tags:
         - Jobs
+      operationId: jobber.get_job
       parameters:
         - name: job_id
           type: string
@@ -277,13 +277,13 @@ paths:
           description: unexpected error
           schema:
             $ref: '#/definitions/Error'
-        
     put:
       summary: amend a specific scheduled job
       description: |
         Updates the definition of a job
       tags:
         - Jobs
+      operationId: jobber.put_job
       parameters:
         - name: job_id
           type: string
@@ -305,13 +305,13 @@ paths:
           description: unexpected error
           schema:
             $ref: '#/definitions/Error'
-            
     delete:
       summary: remove a scheduled job
       description: |
         Removes a scheduled job by job_id. This will not interrupt a running job.
       tags:
         - Jobs
+      operationId: jobber.delete_job
       parameters:
         - name: job_id
           type: string
@@ -327,7 +327,6 @@ paths:
           description: unexpected error
           schema:
             $ref: '#/definitions/Error'
-
   /jobs/{job_id}/report:
     get:
       summary: Return a list of job results for a specific job
@@ -337,6 +336,7 @@ paths:
       tags:
         - Jobs
         - Reports
+      operationId: jobber.get_job_report
       parameters:
         - name: job_id
           type: string

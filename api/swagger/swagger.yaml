@@ -1,0 +1,371 @@
+---
+swagger: "2.0"
+info:
+  description: "Container-based job scheduler for Compose and kubernetes"
+  version: "1.0.0"
+  title: "Jobber API"
+host: "jobber"
+basePath: "/v1"
+schemes:
+- "http"
+produces:
+- "application/json"
+paths:
+  /jobs:
+    get:
+      tags:
+      - "Jobs"
+      summary: "List scheduled jobs"
+      description: "Returns a list of all currently scheduled jobs.\n"
+      operationId: "jobber.get_jobs"
+      parameters: []
+      responses:
+        200:
+          description: "An array of Job objects"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Job"
+        500:
+          description: "Unexpected error"
+          schema:
+            $ref: "#/definitions/Error"
+      x-tags:
+      - tag: "Jobs"
+    post:
+      tags:
+      - "Jobs"
+      summary: "Add a new scheduled job"
+      description: "Adds a new scheduled job to the database.\n"
+      operationId: "jobber.post_jobs"
+      parameters:
+      - in: "body"
+        name: "job"
+        description: "the new data for the job"
+        required: true
+        schema:
+          $ref: "#/definitions/Job"
+      responses:
+        200:
+          description: "Succeeded"
+          schema:
+            type: "string"
+            description: "job_id of the new job"
+        500:
+          description: "unexpected error"
+          schema:
+            $ref: "#/definitions/Error"
+      x-tags:
+      - tag: "Jobs"
+  /jobs/report:
+    get:
+      tags:
+      - "Jobs"
+      summary: "Return a list of job results"
+      description: "Returns a list of JobResult objects for all scheduled jobs, optionally\n\
+        filtered by date and time.\n"
+      operationId: "jobber.get_jobs_report"
+      parameters:
+      - name: "start"
+        in: "query"
+        description: "optional start time for the report"
+        required: false
+        type: "string"
+        format: "date-time"
+      - name: "end"
+        in: "query"
+        description: "optional end time for the report"
+        required: false
+        type: "string"
+        format: "date-time"
+      responses:
+        200:
+          description: "Succeeded"
+          schema:
+            type: "array"
+            description: "list of JobResult objects"
+            items:
+              $ref: "#/definitions/JobResult"
+        500:
+          description: "unexpected error"
+          schema:
+            $ref: "#/definitions/Error"
+      x-tags:
+      - hasMore: "true"
+        tag: "Jobs"
+      - tag: "Reports"
+  /jobs/{job_id}:
+    get:
+      tags:
+      - "Jobs"
+      summary: "get a specific scheduled job"
+      description: "Returns the description of a specific job\n"
+      operationId: "jobber.get_job"
+      parameters:
+      - name: "job_id"
+        in: "path"
+        description: "id of the job to return"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "A Job object"
+          schema:
+            $ref: "#/definitions/Job"
+        404:
+          description: "job ID not found"
+        500:
+          description: "unexpected error"
+          schema:
+            $ref: "#/definitions/Error"
+      x-tags:
+      - tag: "Jobs"
+    put:
+      tags:
+      - "Jobs"
+      summary: "amend a specific scheduled job"
+      description: "Updates the definition of a job\n"
+      operationId: "jobber.put_job"
+      parameters:
+      - name: "job_id"
+        in: "path"
+        description: "id of the job to return"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "job"
+        description: "the new data for the job"
+        required: true
+        schema:
+          $ref: "#/definitions/Job"
+      responses:
+        200:
+          description: "Succeeded"
+        404:
+          description: "job ID not found"
+        500:
+          description: "unexpected error"
+          schema:
+            $ref: "#/definitions/Error"
+      x-tags:
+      - tag: "Jobs"
+    delete:
+      tags:
+      - "Jobs"
+      summary: "remove a scheduled job"
+      description: "Removes a scheduled job by job_id. This will not interrupt a running\
+        \ job.\n"
+      operationId: "jobber.delete_job"
+      parameters:
+      - name: "job_id"
+        in: "path"
+        description: "id of the job to return"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Succeeded"
+        404:
+          description: "job ID not found"
+        500:
+          description: "unexpected error"
+          schema:
+            $ref: "#/definitions/Error"
+      x-tags:
+      - tag: "Jobs"
+  /jobs/{job_id}/report:
+    get:
+      tags:
+      - "Jobs"
+      summary: "Return a list of job results for a specific job"
+      description: "Returns a list of JobResult objects for all scheduled jobs, optionally\n\
+        filtered by date and time.\n"
+      operationId: "jobber.get_job_report"
+      parameters:
+      - name: "job_id"
+        in: "path"
+        description: "id of the job to report on"
+        required: true
+        type: "string"
+      - name: "start"
+        in: "query"
+        description: "optional start time for the report"
+        required: false
+        type: "string"
+        format: "date-time"
+      - name: "end"
+        in: "query"
+        description: "optional end time for the report"
+        required: false
+        type: "string"
+        format: "date-time"
+      responses:
+        200:
+          description: "Succeeded"
+          schema:
+            type: "array"
+            description: "list of JobResult objects"
+            items:
+              $ref: "#/definitions/JobResult"
+        500:
+          description: "unexpected error"
+          schema:
+            $ref: "#/definitions/Error"
+      x-tags:
+      - hasMore: "true"
+        tag: "Jobs"
+      - tag: "Reports"
+definitions:
+  Port:
+    type: "object"
+    properties:
+      port:
+        type: "integer"
+        description: "port number"
+      name:
+        type: "string"
+        description: "optional name"
+  Envvar:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+        description: "the name of the variable to set in the container"
+      value:
+        type: "string"
+        description: "value of the variable"
+  Volume:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+        description: "optional name for a volume"
+      hostPath:
+        type: "string"
+        description: "path to the volume on the host"
+      containerPath:
+        type: "string"
+        description: "path inside the container"
+  Link:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+        description: "optional name for a link"
+      linkContainer:
+        type: "string"
+        description: "name of the container to link to"
+      linkName:
+        type: "string"
+        description: "name container will be linked as"
+  Template:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+        description: "name for the container"
+      image:
+        type: "string"
+        description: "URL to job image in container repository."
+      replicas:
+        type: "integer"
+        description: "number of containers to launch, defaults to 1"
+      ports:
+        type: "array"
+        description: "array of ports the container should expose"
+        items:
+          $ref: "#/definitions/Port"
+      env:
+        type: "array"
+        description: "array of environment variables to be set in container"
+        items:
+          $ref: "#/definitions/Envvar"
+      volumes:
+        type: "array"
+        description: "array of volume mounts"
+        items:
+          $ref: "#/definitions/Volume"
+      links:
+        type: "array"
+        description: "array of container links"
+        items:
+          $ref: "#/definitions/Link"
+      pullAlways:
+        type: "boolean"
+        description: "true if the image should always be pulled."
+  Schedule:
+    type: "object"
+    properties:
+      schedule_id:
+        type: "string"
+        description: "Unique identifier representing a specific schedule."
+      name:
+        type: "string"
+        description: "unique name for the schedule"
+      minutes:
+        type: "string"
+        description: "minute count, equivalent to cron minutes column"
+      hours:
+        type: "string"
+        description: "hour count, equivalent to cron hours column"
+      dayOfMonth:
+        type: "string"
+        description: "day of month, equivalent to cron day of month column"
+      month:
+        type: "string"
+        description: "month, equivalent to cron month column"
+      dayOfWeek:
+        type: "string"
+        description: "day of week, equivalent to cron day of week column"
+      year:
+        type: "string"
+        description: "year, equivalent to cron year column"
+  Job:
+    type: "object"
+    properties:
+      job_id:
+        type: "string"
+        description: "Unique identifier representing a specific scheduled job."
+      name:
+        type: "string"
+        description: "Unique name of the job."
+      description:
+        type: "string"
+        description: "Description of job and what it does."
+      template:
+        $ref: "#/definitions/Template"
+      schedule:
+        $ref: "#/definitions/Schedule"
+  JobResult:
+    type: "object"
+    properties:
+      job_id:
+        type: "string"
+        description: "Unique identifier representing a specific scheduled job."
+      job_name:
+        type: "string"
+        description: "Unique name of the job"
+      started:
+        type: "string"
+        format: "date-time"
+        description: "Timestamp when job was started"
+      exited:
+        type: "string"
+        format: "date-time"
+        description: "Timestamp when job process exited"
+      exitCode:
+        type: "integer"
+        description: "exit code of the job process"
+      lastLog:
+        type: "string"
+        description: "last log message received from job"
+  Error:
+    type: "object"
+    properties:
+      code:
+        type: "integer"
+        format: "int32"
+      message:
+        type: "string"
+      fields:
+        type: "string"
