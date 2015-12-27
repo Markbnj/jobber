@@ -19,7 +19,7 @@ RUN apt-get update &&\
  python-pip
 
 # install and configure redis
-RUN mkdir /home/jobber && cd /home/jobber &&\
+RUN cd /home &&\
  wget -q http://download.redis.io/redis-stable.tar.gz &&\
  tar xvzf redis-stable.tar.gz &&\
  cd redis-stable &&\
@@ -36,15 +36,16 @@ RUN mkdir /home/jobber && cd /home/jobber &&\
  mkdir -p /var/redis/6379
 
 ADD 6379.conf /etc/redis/6379.conf
-ADD requirements.txt /home/jobber/requirements.txt
-ADD api.tar.gz /home/jobber/
+ADD jobber /usr/local/bin/jobber
+ADD requirements.txt /usr/local/bin/jobber/requirements.txt
 
 # install python pre-reqs
-RUN cd /home/jobber &&\
+RUN cd /usr/local/bin/jobber &&\
  pip install -r requirements.txt
 
-COPY supervisord.conf /etc/supervisord.conf
+ADD supervisord.conf /etc/supervisord.conf
 
 EXPOSE 8080
 
+# CMD python3 /usr/local/bin/jobber/api/jobber.py
 CMD /bin/bash
