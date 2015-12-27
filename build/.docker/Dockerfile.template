@@ -35,11 +35,16 @@ RUN mkdir /home/jobber && cd /home/jobber &&\
  mkdir /etc/redis &&\
  mkdir -p /var/redis/6379
 
- COPY 6379.conf /etc/redis/6379.conf
- COPY requirements.txt /home/jobber/requirements.txt
+ADD 6379.conf /etc/redis/6379.conf
+ADD requirements.txt /home/jobber/requirements.txt
+ADD api.tar.gz /home/jobber/
 
- #install python pre-reqs
- RUN cd /home/jobber &&\
-  pip3 install -r requirements.txt
+# install python pre-reqs
+RUN cd /home/jobber &&\
+ pip install -r requirements.txt
 
 COPY supervisord.conf /etc/supervisord.conf
+
+EXPOSE 8080
+
+CMD /bin/bash
