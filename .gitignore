@@ -16,6 +16,11 @@ coverage.xml
 *,cover
 
 *.log
+*.gz
 
 # Sphinx documentation
 docs/_build/
+
+# project specific
+build/.docker/jobber
+build/.docker/Dockerfile
