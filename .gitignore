@@ -23,5 +23,4 @@ docs/_build/
 
 # project specific
 build/jobber/temp
-build/jobber/Dockerfile
 build/gh_token.mk

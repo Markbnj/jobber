@@ -1,5 +1,5 @@
-# jobber service image
-FROM ##BASE##
+# jobber service base image
+FROM debian:wheezy
 MAINTAINER Mark Betz <betz.mark@gmail.com>
 
 # disable annoying warnings from installers
@@ -36,15 +36,8 @@ RUN cd /home &&\
  mkdir -p /var/redis/6379
 
 ADD 6379.conf /etc/redis/6379.conf
-ADD temp /usr/local/bin/jobber
-ADD requirements.txt /usr/local/bin/jobber/requirements.txt
 
-# install python3 pre-reqs
-RUN cd /usr/local/bin/jobber &&\
- pip install -r requirements.txt
+# install and configure supervisor
+RUN pip install supervisor
 
 ADD supervisord.conf /etc/supervisord.conf
-
-EXPOSE 8080
-
-CMD /bin/bash
