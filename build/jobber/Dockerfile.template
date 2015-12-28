@@ -36,7 +36,7 @@ RUN cd /home &&\
  mkdir -p /var/redis/6379
 
 ADD 6379.conf /etc/redis/6379.conf
-ADD jobber /usr/local/bin/jobber
+ADD temp /usr/local/bin/jobber
 ADD requirements.txt /usr/local/bin/jobber/requirements.txt
 
 # install python3 pre-reqs
