@@ -3,11 +3,12 @@ BASE_IMAGE = debian\:wheezy
 IMAGE_NAME ?= jobber
 BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
 TAG ?= $(subst /,-,$(BRANCH))
-GITHUB_TOKEN ?= 0b14ea13c508b3083d142e5dc771a2c793641707
+GITHUB_TOKEN ?= 27bb121d6a0993767d0d2ea58ebe52d31564e3b9
 DOCKER_BUILD ?= docker build
 DOCKER_PUSH ?= docker push
 DOCKER_RUN ?= docker run -it
 DOCKER_CONTAINER_LIST ?= docker ps -a
+DOCKER_IMAGE_LIST ?= docker images
 DOCKER_RMI ?= docker rmi
 DOCKER_RM ?= docker rm -f
 
@@ -17,7 +18,7 @@ clean:
 	rm -f .docker/jobber.tar.gz
 	rm -rf .docker/jobber
 	($(DOCKER_CONTAINER_LIST) | awk '$$NF == "$(IMAGE_NAME)" {exit 1}') || $(DOCKER_RM) $(IMAGE_NAME)
-	$(DOCKER_RMI) $(REGISTRY_BASE)/$(IMAGE_NAME):$(TAG)
+	($(DOCKER_IMAGE_LIST) | awk '$$NF == "$(REGISTRY_BASE)/$(IMAGE_NAME)"') || $(DOCKER_RMI) $(REGISTRY_BASE)/$(IMAGE_NAME)
 
 build: clean container
 
