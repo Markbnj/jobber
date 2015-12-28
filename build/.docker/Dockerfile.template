@@ -41,13 +41,10 @@ ADD requirements.txt /usr/local/bin/jobber/requirements.txt
 
 # install python3 pre-reqs
 RUN cd /usr/local/bin/jobber &&\
- pip-3.2 install -r requirements.txt
+ pip install -r requirements.txt
 
-# install and configure supervisord
-RUN pip install supervisor
 ADD supervisord.conf /etc/supervisord.conf
 
 EXPOSE 8080
 
-CMD python3 /usr/local/bin/jobber/api/jobber.py
-# CMD /bin/bash
+CMD /bin/bash
