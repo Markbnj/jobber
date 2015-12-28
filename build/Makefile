@@ -3,7 +3,6 @@ BASE_IMAGE = debian\:wheezy
 IMAGE_NAME ?= jobber
 BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
 TAG ?= $(subst /,-,$(BRANCH))
-GITHUB_TOKEN ?= 27bb121d6a0993767d0d2ea58ebe52d31564e3b9
 DOCKER_BUILD ?= docker build
 DOCKER_PUSH ?= docker push
 DOCKER_RUN ?= docker run -it
@@ -11,6 +10,8 @@ DOCKER_CONTAINER_LIST ?= docker ps -a
 DOCKER_IMAGE_LIST ?= docker images
 DOCKER_RMI ?= docker rmi
 DOCKER_RM ?= docker rm -f
+
+include gh_token.mk
 
 clean:
 	rm -f .docker/Dockerfile
