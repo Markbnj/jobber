@@ -37,4 +37,4 @@ build: clean-jobber jobber-image
 build-all: clean-base base-image clean-jobber jobber-image
 
 run:
-	$(DOCKER_RUN) -h $(IMAGE_NAME) --name=$(IMAGE_NAME) $(REGISTRY_BASE)/$(IMAGE_NAME):$(TAG)
+	$(DOCKER_RUN) -h $(IMAGE_NAME) --name=$(IMAGE_NAME) -p 5000:5000 $(REGISTRY_BASE)/$(IMAGE_NAME):$(TAG)
