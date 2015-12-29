@@ -37,4 +37,5 @@ build: clean-jobber jobber-image
 build-all: clean-base base-image clean-jobber jobber-image
 
 run:
+	($(DOCKER_CONTAINER_LIST) | awk '$$NF == "$(IMAGE_NAME)" {exit 1}') || $(DOCKER_RM) $(IMAGE_NAME)
 	$(DOCKER_RUN) -h $(IMAGE_NAME) --name=$(IMAGE_NAME) -p 5000:5000 $(REGISTRY_BASE)/$(IMAGE_NAME):$(TAG)
