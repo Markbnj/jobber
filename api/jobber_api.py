@@ -9,4 +9,4 @@ def jobs(job=None):
 
 if __name__ == "__main__":
     rd = StrictRedis(host='localhost', port=6379)
-    app.run()
+    app.run(host="0.0.0.0")
