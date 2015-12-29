@@ -9,6 +9,6 @@ ADD requirements.txt /usr/local/bin/jobber/requirements.txt
 RUN cd /usr/local/bin/jobber &&\
  pip install -r requirements.txt
 
-EXPOSE 8080
+EXPOSE 5000
 
-CMD /bin/bash
+CMD python /usr/local/bin/jobber/api/jobber_api.py
