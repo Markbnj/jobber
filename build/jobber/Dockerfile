@@ -13,4 +13,4 @@ ADD supervisord.conf /etc/supervisord.conf
 
 EXPOSE 5000
 
-CMD /usr/local/bin/supervisord;/bin/bash
+CMD /usr/local/bin/supervisord -c /etc/supervisord.conf;/bin/bash
