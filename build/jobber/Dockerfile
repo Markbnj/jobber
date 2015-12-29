@@ -13,4 +13,4 @@ ADD supervisord.conf /etc/supervisord.conf
 
 EXPOSE 5000
 
-CMD /usr/local/bin/supervisord -c /etc/supervisord.conf;/bin/bash
+CMD service rsyslog restart;/usr/local/bin/supervisord -c /etc/supervisord.conf;/bin/bash

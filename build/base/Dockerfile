@@ -36,6 +36,9 @@ RUN cd /home &&\
  mkdir -p /var/redis/6379
 
 ADD 6379.conf /etc/redis/6379.conf
+ADD rsyslog.conf /etc/rsyslog.conf
+ADD 50-default.conf /etc/rsyslog.d/50-default.conf
 
-# install and configure supervisor
-RUN pip install supervisor
+RUN chmod 644 /etc/rsyslog.conf &&\
+ chmod 644 /etc/rsyslog.d/50-default.conf &&\
+ RUN pip install supervisor
