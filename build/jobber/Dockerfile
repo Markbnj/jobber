@@ -9,6 +9,8 @@ ADD requirements.txt /usr/local/bin/jobber/requirements.txt
 RUN cd /usr/local/bin/jobber &&\
  pip install -r requirements.txt
 
+ADD supervisord.conf /etc/supervisord.conf
+
 EXPOSE 5000
 
-CMD python /usr/local/bin/jobber/api/jobber_api.py
+CMD /usr/local/bin/supervisord;/bin/bash

@@ -39,5 +39,3 @@ ADD 6379.conf /etc/redis/6379.conf
 
 # install and configure supervisor
 RUN pip install supervisor
-
-ADD supervisord.conf /etc/supervisord.conf
