@@ -10,6 +10,7 @@ RUN apt-get update &&\
  apt-get install -y\
  build-essential\
  checkinstall\
+ rsyslog\
  curl\
  wget\
  git\
@@ -41,4 +42,4 @@ ADD 50-default.conf /etc/rsyslog.d/50-default.conf
 
 RUN chmod 644 /etc/rsyslog.conf &&\
  chmod 644 /etc/rsyslog.d/50-default.conf &&\
- RUN pip install supervisor
+ pip install supervisor
