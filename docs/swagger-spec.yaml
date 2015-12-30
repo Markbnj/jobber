@@ -138,6 +138,24 @@ definitions:
       schedule:
         $ref: '#/definitions/Schedule'
 
+  PagedJobs:
+    type: object
+    properties:
+      items:
+        type: integer
+        description: the number of results returned
+      total_items:
+        type: integer
+        description: the total number of items in the result set
+      start_pos:
+        type: integer
+        description: ordinal position of first returned item in result set
+      results:
+        type: array
+        items:
+          $ref: '#/definitions/Job'
+        description: list of Job objects
+
   JobResult:
     type: object
     properties:
@@ -198,13 +216,22 @@ paths:
         Returns a list of all currently scheduled jobs.
       tags:
         - Jobs
+      parameters:
+        - name: start_pos
+          type: integer
+          in: query
+          required: false
+          description: ordinal position of first returned item in result set
+        - name: item_count
+          type: integer
+          in: query
+          required: false
+          description: number of items returned from result set
       responses:
         '200':
           description: An array of Job objects
           schema:
-            type: array
-            items:
-              $ref: '#/definitions/Job'
+            $ref: '#/definitions/PagedJobs'
         '500':
           description: Unexpected error
           schema:
