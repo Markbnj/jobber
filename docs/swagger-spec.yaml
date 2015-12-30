@@ -162,6 +162,24 @@ definitions:
         type: string
         description: last log message received from job
 
+  PagedJobResults:
+    type: object
+    properties:
+      items:
+        type: integer
+        description: the number of results returned
+      total_items:
+        type: integer
+        description: the total number of items in the result set
+      start_pos:
+        type: integer
+        description: ordinal position of first returned item in result set
+      results:
+        type: array
+        items:
+          $ref: '#/definitions/JobResult'
+        description: list of JobResult objects
+
   Error:
     type: object
     properties:
@@ -180,7 +198,6 @@ paths:
         Returns a list of all currently scheduled jobs.
       tags:
         - Jobs
-      operationId: jobber.get_jobs
       responses:
         '200':
           description: An array of Job objects
@@ -192,13 +209,13 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
+
     post:
       summary: Add a new scheduled job
       description: |
         Adds a new scheduled job to the database.
       tags:
         - Jobs
-      operationId: jobber.post_jobs
       parameters:
         - name: job
           schema:
@@ -216,7 +233,8 @@ paths:
           description: unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /jobs/report:
+
+  /jobs/results:
     get:
       summary: Return a list of job results
       description: |
@@ -225,28 +243,34 @@ paths:
       tags:
         - Jobs
         - Reports
-      operationId: jobber.get_jobs_report
       parameters:
-        - name: start
+        - name: start_time
           type: string
           format: date-time
           in: query
           required: false
           description: optional start time for the report
-        - name: end
+        - name: end_time
           type: string
           format: date-time
           in: query
           required: false
           description: optional end time for the report
+        - name: start_pos
+          type: integer
+          in: query
+          required: false
+          description: ordinal position of first returned item in result set
+        - name: item_count
+          type: integer
+          in: query
+          required: false
+          description: number of items returned from result set
       responses:
         '200':
           description: Succeeded
           schema:
-            type: array
-            items:
-              $ref: '#/definitions/JobResult'
-            description: list of JobResult objects
+            $ref: '#/definitions/PagedJobResults'
         '500':
           description: unexpected error
           schema:
@@ -259,7 +283,6 @@ paths:
         Returns the description of a specific job
       tags:
         - Jobs
-      operationId: jobber.get_job
       parameters:
         - name: job_id
           type: string
@@ -277,13 +300,13 @@ paths:
           description: unexpected error
           schema:
             $ref: '#/definitions/Error'
+
     put:
       summary: amend a specific scheduled job
       description: |
         Updates the definition of a job
       tags:
         - Jobs
-      operationId: jobber.put_job
       parameters:
         - name: job_id
           type: string
@@ -305,13 +328,13 @@ paths:
           description: unexpected error
           schema:
             $ref: '#/definitions/Error'
+
     delete:
       summary: remove a scheduled job
       description: |
         Removes a scheduled job by job_id. This will not interrupt a running job.
       tags:
         - Jobs
-      operationId: jobber.delete_job
       parameters:
         - name: job_id
           type: string
@@ -327,7 +350,8 @@ paths:
           description: unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /jobs/{job_id}/report:
+
+  /jobs/{job_id}/results:
     get:
       summary: Return a list of job results for a specific job
       description: |
@@ -336,33 +360,39 @@ paths:
       tags:
         - Jobs
         - Reports
-      operationId: jobber.get_job_report
       parameters:
         - name: job_id
           type: string
           in: path
           required: true
           description: id of the job to report on
-        - name: start
+        - name: start_time
           type: string
           format: date-time
           in: query
           required: false
           description: optional start time for the report
-        - name: end
+        - name: end_time
           type: string
           format: date-time
           in: query
           required: false
           description: optional end time for the report
+        - name: start_pos
+          type: integer
+          in: query
+          required: false
+          description: ordinal position of first returned item in result set
+        - name: item_count
+          type: integer
+          in: query
+          required: false
+          description: number of items returned from result set
       responses:
         '200':
           description: Succeeded
           schema:
-            type: array
-            items:
-              $ref: '#/definitions/JobResult'
-            description: list of JobResult objects
+            $ref: '#/definitions/PagedJobResults'
         '500':
           description: unexpected error
           schema:
