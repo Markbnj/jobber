@@ -13,7 +13,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="jobber api server")
     parser.add_argument("-p", "--port", help='The jobber server will listen on this port', default=5000)
     parser.add_argument("-i", "--iface", help='The jobber server will bind to this interface', default="127.0.0.1")
-    parser.add_argument("-d", "--debug", help='Start the server in debug mode', action=store_true)
+    parser.add_argument("-d", "--debug", help='Start the server in debug mode', action="store_true")
     args = parser.parse_args()
     
     syslog.openlog("jobber service", 0, syslog.LOG_LOCAL0)
