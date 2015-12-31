@@ -60,7 +60,7 @@ def get_post_jobs():
             return _make_error(500, e.message)
 
 
-@app.route('jobs/results/', methods=['GET'])
+@app.route('/jobs/results/', methods=['GET'])
 def get_jobs_results():
     # querystring: start_time
     # querystring: end_time
@@ -70,7 +70,7 @@ def get_jobs_results():
     # build and return PagedJobResults structure as application/json
     return "Get run results for all jobs here.\n"
 
-@app.route('jobs/<job_id>/', methods=['GET','PUT','DELETE'])
+@app.route('/jobs/<job_id>/', methods=['GET','PUT','DELETE'])
 def get_put_delete_job(job_id):
     if request.method == 'DELETE':
         # path: job_id
@@ -101,7 +101,7 @@ def get_put_delete_job(job_id):
 
         return "Get job {} definition here.\n".format(job_id)
 
-@app.route('jobs/<job_id>/results/', methods=['GET'])
+@app.route('/jobs/<job_id>/results/', methods=['GET'])
 def get_job_results(job_id):
     # path: job_id
     # querystring: start_time
