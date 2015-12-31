@@ -1,3 +1,5 @@
+import syslog
+import json
 from redis import StrictRedis
 from crontabs import add_job, remove_job, sync_jobs
 
@@ -16,6 +18,12 @@ def _validate_job(job):
     pass
 
 def add_job(job):
+    try:
+        rd = StrictRedis(host='localhost', port=6379)
+    except Exception as e:
+        syslog.syslog(syslog.LOG_ERR, "{}".format(e))
+        raise InternalError("Failed to create database interface")
+
     # validate the job
     # hash the name
     # assert that the hash is not in redis
@@ -25,6 +33,12 @@ def add_job(job):
     return job
 
 def get_jobs(start_pos=None, item_count=None):
+    try:
+        rd = StrictRedis(host='localhost', port=6379)
+    except Exception as e:
+        syslog.syslog(syslog.LOG_ERR, "{}".format(e))
+        raise InternalError("Failed to create database interface")
+
     # read and deserialize the list of jobs from redis
     # optionally offset to start_pos
     # read either to end or item_count, whichever comes first

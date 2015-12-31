@@ -122,18 +122,12 @@ if __name__ == "__main__":
     syslog.openlog("jobber service", 0, syslog.LOG_LOCAL0)
     syslog.syslog(syslog.LOG_INFO, "jobber service API starting on {}:{}".format(args.iface, args.port))
 
-    try:
-        rd = StrictRedis(host='localhost', port=6379)
-    except Exception as e:
-        syslog.syslog(syslog.LOG_ERR, "failed to create redis interface: {}".format(e))
-    else:
-        # read all job definitions from redis and validate all crontabs
-        # if the job exists but the crontab does not rebuild the crontab
-        # if the crontab exists but the job does not remove the crontab
-        # if both exist but the crontab schedule doesn't match update the crontab
-        if args.debug:
-            app.debug = True
-        app.run(host=args.iface, port=args.port)
-    finally:
-        syslog.syslog(syslog.LOG_INFO, "jobber service API shutting down")
-        syslog.closelog()
+    # read all job definitions from redis and validate all crontabs
+    # if the job exists but the crontab does not rebuild the crontab
+    # if the crontab exists but the job does not remove the crontab
+    # if both exist but the crontab schedule doesn't match update the crontab
+    if args.debug:
+        app.debug = True
+    app.run(host=args.iface, port=args.port)
+    syslog.syslog(syslog.LOG_INFO, "jobber service API shutting down")
+    syslog.closelog()
