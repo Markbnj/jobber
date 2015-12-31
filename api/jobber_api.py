@@ -120,7 +120,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     syslog.openlog("jobber service", 0, syslog.LOG_LOCAL0)
-    syslog.syslog(syslog.LOG_INFO, "jobber service API starting on {}:{}".format(args.iface, int(args.port)))
+    syslog.syslog(syslog.LOG_INFO, "jobber service API starting on {}:{}".format(args.iface, args.port))
 
     # read all job definitions from redis and validate all crontabs
     # if the job exists but the crontab does not rebuild the crontab
@@ -128,6 +128,6 @@ if __name__ == "__main__":
     # if both exist but the crontab schedule doesn't match update the crontab
     if args.debug:
         app.debug = True
-    app.run(host=args.iface, port=args.port)
+    app.run(host=args.iface, port=int(args.port))
     syslog.syslog(syslog.LOG_INFO, "jobber service API shutting down")
     syslog.closelog()
