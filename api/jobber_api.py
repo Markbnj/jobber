@@ -1,31 +1,64 @@
 import argparse
 import syslog
-from flask import Flask, request
-from redis import StrictRedis
+import json
+from flask import Flask, request, Response
+from jobs import add_job, get_jobs
+from jobs import BadRequestError, NotFoundError, InternalError
+
 
 app = Flask(__name__)
+
+
+def _make_error(status, message):
+    """
+    Takes an http status code >= 400 and a message and returns
+    a properly formatted error response
+    """
+    error = {}
+    error['code'] = status
+    error['message'] = message
+    error['fields'] = ""
+    resp = Response(json.dumps(error))
+    resp.headers['Content-Type'] = 'application/json'
+    resp.status = status
+    return resp
+
+
+def _make_response(status, response=None):
+    """
+    Takes an http status code >=200 and a response in json format
+    and returns a properly formatted response object
+    """
+    resp = Response(response)
+    resp.headers['Content-Type'] = 'application/json'
+    resp.status = status
+    return resp
+
 
 @app.route('/jobs/', methods=['GET', 'POST'])
 def get_post_jobs():
     if request.method == 'POST':
-        # body: job definition as application/json
-        # deserialize and validate the json request body
-        # if validation fails...
-        #     return 400 bad request
-        # hash the job name
-        # reserialize the definition to json, insert into redis w/hash as key
-        # if key already exists...
-        #     return 400 bad request, message: "Job name already exists"
-        # build the cron tab
-        # return 200 OK
-        return "Post a new job definition here.\n"
+        job = request.json
+        try:
+            return _make_response(200, add_job(job))
+        except BadRequestError as e:
+            return _make_error(400, e.message)
+        except NotFoundError as e:
+            return _make_error(404, e.message)
+        except Exception as e:
+            return _make_error(500, e.message)
     else:
-        # querystring: start_pos
-        # querystring: item_count
-        # read and deserialize all the job definitions
-        # select subset if applicable
-        # build and return PagedJobs structure as application/json
-        return "Get a list of job definitions here.\n"
+        start = request.args.get('start_pos', None)
+        items = request.args.get('item_count', None)
+        try:
+            return _make_response(200, get_jobs(start, items))
+        except BadRequestError as e:
+            return _make_error(400, e.message)
+        except NotFoundError as e:
+            return _make_error(404, e.message)
+        except Exception as e:
+            return _make_error(500, e.message)
+
 
 @app.route('jobs/results/', methods=['GET'])
 def get_jobs_results():
