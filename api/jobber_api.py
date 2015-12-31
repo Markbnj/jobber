@@ -29,8 +29,9 @@ def _make_response(status, response=None):
     Takes an http status code >=200 and a response in json format
     and returns a properly formatted response object
     """
-    resp = Response(response)
+    resp = Response()
     resp.headers['Content-Type'] = 'application/json'
+    resp.set_data(response)
     resp.status = status
     return resp
 
@@ -70,6 +71,7 @@ def get_jobs_results():
     # build and return PagedJobResults structure as application/json
     return "Get run results for all jobs here.\n"
 
+
 @app.route('/jobs/<job_id>/', methods=['GET','PUT','DELETE'])
 def get_put_delete_job(job_id):
     if request.method == 'DELETE':
@@ -101,6 +103,7 @@ def get_put_delete_job(job_id):
 
         return "Get job {} definition here.\n".format(job_id)
 
+
 @app.route('/jobs/<job_id>/results/', methods=['GET'])
 def get_job_results(job_id):
     # path: job_id
@@ -111,6 +114,7 @@ def get_job_results(job_id):
     # read and deseralize the job run results
     # build and return PagedJobResults structure as application/json
     return "Get run results for job {} here.\n".format(job_id)
+    
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="jobber api server")
