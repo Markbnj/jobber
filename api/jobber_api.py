@@ -40,24 +40,24 @@ def get_post_jobs():
     if request.method == 'POST':
         job = request.json
         try:
-            return _make_response(200, add_job(job))
+            return _make_response("200", add_job(job))
         except BadRequestError as e:
-            return _make_error(400, e.message)
+            return _make_error("400", e.message)
         except NotFoundError as e:
-            return _make_error(404, e.message)
+            return _make_error("404", e.message)
         except Exception as e:
-            return _make_error(500, e.message)
+            return _make_error("500", e.message)
     else:
         start = request.args.get('start_pos', None)
         items = request.args.get('item_count', None)
         try:
-            return _make_response(200, get_jobs(start, items))
+            return _make_response("200", get_jobs(start, items))
         except BadRequestError as e:
-            return _make_error(400, e.message)
+            return _make_error("400", e.message)
         except NotFoundError as e:
-            return _make_error(404, e.message)
+            return _make_error("404", e.message)
         except Exception as e:
-            return _make_error(500, e.message)
+            return _make_error("500", e.message)
 
 
 @app.route('/jobs/results/', methods=['GET'])
