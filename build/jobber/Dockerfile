@@ -11,6 +11,6 @@ RUN cd /usr/local/bin/jobber &&\
 
 ADD supervisord.conf /etc/supervisord.conf
 
-EXPOSE 5000, 5010
+EXPOSE 5000 5010
 
 CMD service rsyslog restart;/usr/local/bin/supervisord -c /etc/supervisord.conf;/bin/bash
