@@ -9,8 +9,10 @@ ADD requirements.txt /usr/local/bin/jobber/requirements.txt
 RUN cd /usr/local/bin/jobber &&\
  pip install -r requirements.txt
 
+ADD start-jobber.sh /usr/local/bin/jobber/start-jobber.sh
+ADD debug-api /usr/local/bin/jobber/debug-api
+ADD debug-admin /usr/local/bin/jobber/debug-admin
 ADD supervisord.conf /etc/supervisord.conf
+ADD supervisord.debug.conf /etc/supervisord.debug.conf
 
-EXPOSE 5000 5010
-
-CMD service rsyslog restart;/usr/local/bin/supervisord -c /etc/supervisord.conf;/bin/bash
+CMD /usr/local/bin/jobber/start-jobber.sh
