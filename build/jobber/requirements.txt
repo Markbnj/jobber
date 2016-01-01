@@ -1,3 +1,5 @@
+ipython>=4.0.1
+ipdb>=0.8.1
 flask>=0.10.1
 redis>=2.10.3
 python-crontab>=1.9.5
