@@ -1,0 +1,4 @@
+#!/bin/bash
+
+echo "Starting jobber API service in debug mode"
+ipython api/jobber_api.py --iface=${IFACE} --port=${PORT} --debug

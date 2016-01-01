@@ -1,0 +1,4 @@
+#!/bin/bash
+
+echo "Starting jobber admin service in debug mode"
+ipython admin/jobber_admin.py --iface=${IFACE} --port=${PORT} --debug
