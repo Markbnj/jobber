@@ -16,6 +16,7 @@ RUN apt-get update &&\
  git\
  nano\
  vim\
+ screen\
  python-dev\
  python-pip
 
