@@ -9,18 +9,19 @@ schemes:
 basePath: /v1
 produces:
   - application/json
-
 definitions:
   Port:
     type: object
     properties:
       port:
         type: integer
-        description: port number
+        description: port number in container
+      hostPort:
+        type: integer
+        description: port mapped on host
       name:
         type: string
         description: optional name
-
   Envvar:
     type: object
     properties:
@@ -30,7 +31,6 @@ definitions:
       value:
         type: string
         description: value of the variable
-
   Volume:
     type: object
     properties:
@@ -43,7 +43,6 @@ definitions:
       containerPath:
         description: path inside the container
         type: string
-
   Link:
     type: object
     properties:
@@ -56,7 +55,6 @@ definitions:
       linkName:
         type: string
         description: name container will be linked as
-
   Template:
     type: object
     properties:
@@ -69,6 +67,12 @@ definitions:
       replicas:
         type: integer
         description: 'number of containers to launch, defaults to 1'
+      command:
+        type: string
+        description: command to exec in the container
+      pullAlways:
+        type: boolean
+        description: true if the image should always be pulled.
       ports:
         type: array
         items:
@@ -89,38 +93,30 @@ definitions:
         items:
           $ref: '#/definitions/Link'
         description: array of container links
-      pullAlways:
-        type: boolean
-        description: true if the image should always be pulled.
-
   Schedule:
     type: object
     properties:
-      schedule_id:
+      description:
         type: string
-        description: Unique identifier representing a specific schedule.
-      name:
-        type: string
-        description: unique name for the schedule
+        description: text comment on schedule
       minutes:
         type: string
-        description: minute count, equivalent to cron minutes column
+        description: 'minute count, equivalent to cron minutes column'
       hours:
         type: string
-        description: hour count, equivalent to cron hours column
+        description: 'hour count, equivalent to cron hours column'
       dayOfMonth:
         type: string
-        description: day of month, equivalent to cron day of month column
-      month:      
+        description: 'day of month, equivalent to cron day of month column'
+      month:
         type: string
-        description: month, equivalent to cron month column
+        description: 'month, equivalent to cron month column'
       dayOfWeek:
         type: string
-        description: day of week, equivalent to cron day of week column
+        description: 'day of week, equivalent to cron day of week column'
       year:
         type: string
-        description: year, equivalent to cron year column
-
+        description: 'year, equivalent to cron year column'
   Job:
     type: object
     properties:
@@ -133,11 +129,12 @@ definitions:
       description:
         type: string
         description: Description of job and what it does.
-      template:
-        $ref: '#/definitions/Template'
+      templates:
+        type: array
+        items:
+          $ref: '#/definitions/Template'
       schedule:
         $ref: '#/definitions/Schedule'
-
   PagedJobs:
     type: object
     properties:
@@ -155,14 +152,13 @@ definitions:
         items:
           $ref: '#/definitions/Job'
         description: list of Job objects
-
   JobResult:
     type: object
     properties:
       job_id:
         type: string
         description: Unique identifier representing a specific scheduled job.
-      job_name:      
+      job_name:
         type: string
         description: Unique name of the job
       started:
@@ -179,7 +175,6 @@ definitions:
       lastLog:
         type: string
         description: last log message received from job
-
   PagedJobResults:
     type: object
     properties:
@@ -197,7 +192,6 @@ definitions:
         items:
           $ref: '#/definitions/JobResult'
         description: list of JobResult objects
-
   Error:
     type: object
     properties:
@@ -236,7 +230,6 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-
     post:
       summary: Add a new scheduled job
       description: |
@@ -260,7 +253,6 @@ paths:
           description: unexpected error
           schema:
             $ref: '#/definitions/Error'
-
   /jobs/results:
     get:
       summary: Return a list of job results
@@ -302,8 +294,7 @@ paths:
           description: unexpected error
           schema:
             $ref: '#/definitions/Error'
-
-  /jobs/{job_id}:
+  '/jobs/{job_id}':
     get:
       summary: get a specific scheduled job
       description: |
@@ -327,7 +318,6 @@ paths:
           description: unexpected error
           schema:
             $ref: '#/definitions/Error'
-
     put:
       summary: amend a specific scheduled job
       description: |
@@ -346,7 +336,7 @@ paths:
           in: body
           required: true
           description: the new data for the job
-      responses:    
+      responses:
         '200':
           description: Succeeded
         '404':
@@ -355,11 +345,11 @@ paths:
           description: unexpected error
           schema:
             $ref: '#/definitions/Error'
-
     delete:
       summary: remove a scheduled job
-      description: |
-        Removes a scheduled job by job_id. This will not interrupt a running job.
+      description: >
+        Removes a scheduled job by job_id. This will not interrupt a running
+        job.
       tags:
         - Jobs
       parameters:
@@ -377,8 +367,7 @@ paths:
           description: unexpected error
           schema:
             $ref: '#/definitions/Error'
-
-  /jobs/{job_id}/results:
+  '/jobs/{job_id}/results':
     get:
       summary: Return a list of job results for a specific job
       description: |
