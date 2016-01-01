@@ -117,14 +117,14 @@ def get_job_results(job_id):
     
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="jobber api server")
-    parser.add_argument("-p", "--port", help='The jobber server will listen on this port', default=5000)
-    parser.add_argument("-i", "--iface", help='The jobber server will bind to this interface', default="127.0.0.1")
-    parser.add_argument("-d", "--debug", help='Start the server in debug mode', action="store_true")
+    parser = argparse.ArgumentParser(description="jobber api service")
+    parser.add_argument("-p", "--port", help='The jobber api service will listen on this port', default=5000)
+    parser.add_argument("-i", "--iface", help='The jobber api service will bind to this interface', default="127.0.0.1")
+    parser.add_argument("-d", "--debug", help='Start the service in debug mode', action="store_true")
     args = parser.parse_args()
     
-    syslog.openlog("jobber service", 0, syslog.LOG_LOCAL0)
-    syslog.syslog(syslog.LOG_INFO, "jobber service API starting on {}:{}".format(args.iface, args.port))
+    syslog.openlog("jobber api service", 0, syslog.LOG_LOCAL0)
+    syslog.syslog(syslog.LOG_INFO, "jobber API service starting on {}:{}".format(args.iface, args.port))
 
     # read all job definitions from redis and validate all crontabs
     # if the job exists but the crontab does not rebuild the crontab
@@ -133,5 +133,5 @@ if __name__ == "__main__":
     if args.debug:
         app.debug = True
     app.run(host=args.iface, port=int(args.port))
-    syslog.syslog(syslog.LOG_INFO, "jobber service API shutting down")
+    syslog.syslog(syslog.LOG_INFO, "jobber API service shutting down")
     syslog.closelog()
