@@ -38,6 +38,8 @@ def _make_response(status, response=None):
 
 @app.route('/jobs/', methods=['GET', 'POST'])
 def get_post_jobs():
+    raise Exception("test failure")
+
     if request.method == 'POST':
         job = request.json
         try:
