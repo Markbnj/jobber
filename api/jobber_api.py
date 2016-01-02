@@ -2,7 +2,7 @@ import argparse
 import syslog
 import json
 from flask import Flask, request, make_response
-from jobs import add_job, get_jobs, job_results, get_job
+from jobs import add_job, get_jobs, job_results, get_job, delete_job
 from jobs import BadRequestError, NotFoundError, InternalError
 
 
@@ -70,13 +70,14 @@ def get_jobs_results():
 @app.route('/jobs/<job_id>/', methods=['GET','PUT','DELETE'])
 def get_put_delete_job(job_id):
     if request.method == 'DELETE':
-        # path: job_id
-        # Remove the id/key in the redis job db
-        # if the key does not exist...
-        #     return 404 not found
-        # Remove the crontab
-        # return 200 OK
-        return "Delete job {} definition here.\n".format(job_id)
+        try:
+            return _make_response(response=delete_job(job_id))
+        except NotFoundError as e:
+            return _make_error(404, e.message)
+        except BadRequestError as e:
+            return _make_error(400, e.message)
+        except Exception as e:
+            return _make_error(500, e.message)
     elif request.method == 'PUT':
         # path: job_id
         # body: job definition as application/json
