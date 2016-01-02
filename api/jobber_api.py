@@ -64,16 +64,17 @@ def get_jobs_results():
     start_pos = request.args.get('start_pos', None)
     item_count = request.args.get('items_count', None)
     try:
-        return _make_response("200", job_results(
+        return _make_response("200", 
+            job_results(
                 job_id=None,
                 start_time=start_time, 
                 end_time=end_time, 
                 start_pos=start_pos, 
                 item_count=item_count))
-        except BadRequestError as e:
-            return _make_error("400", e.message)
-        except Exception as e:
-            return _make_error("500", e.message)
+    except BadRequestError as e:
+        return _make_error("400", e.message)
+    except Exception as e:
+        return _make_error("500", e.message)
 
 
 @app.route('/jobs/<job_id>/', methods=['GET','PUT','DELETE'])
