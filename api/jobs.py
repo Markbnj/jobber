@@ -56,3 +56,14 @@ def job_results(job_id=None, start_time=None, end_time=None, start_pos=None, ite
     # optionally take the paged subject
     # build and return the paged job results object
     return {"job_id":job_id,"start_time":start_time,"end_time":end_time,"start_pos":start_pos,"item_count":item_count}
+
+def get_job(job_id):
+    try:
+        rd = StrictRedis(host='localhost', port=6379)
+    except Exception as e:
+        syslog.syslog(syslog.LOG_ERR, "{}".format(e))
+        raise InternalError("Failed to create database interface")
+    # read and deserialize the job from redis
+    # if the key is None raise BadRequestError
+    # if the key isn't found raise NotFoundError
+    return {"job_id":job_id}
