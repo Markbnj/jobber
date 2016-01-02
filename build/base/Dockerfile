@@ -40,7 +40,8 @@ RUN cd /home &&\
 ADD 6379.conf /etc/redis/6379.conf
 ADD rsyslog.conf /etc/rsyslog.conf
 ADD 50-default.conf /etc/rsyslog.d/50-default.conf
+ADD pip_requirements.txt /home/pip_requirements.txt
 
 RUN chmod 644 /etc/rsyslog.conf &&\
  chmod 644 /etc/rsyslog.d/50-default.conf &&\
- pip install supervisor
+ pip install -r /home/pip_requirements.txt
