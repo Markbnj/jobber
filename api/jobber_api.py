@@ -64,8 +64,7 @@ def get_jobs_results():
     start_pos = request.args.get('start_pos', None)
     item_count = request.args.get('items_count', None)
     try:
-        return _make_response("200", 
-            job_results(
+        return _make_response("200", job_results(
                 job_id=None,
                 start_time=start_time, 
                 end_time=end_time, 
