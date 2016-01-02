@@ -39,7 +39,10 @@ def get_post_jobs():
         start_pos = request.args.get('start_pos', None)
         items_count = request.args.get('item_count', None)
         try:
-            return _make_response(get_jobs(start, items))
+            return _make_response(
+                get_jobs(
+                    start_pos=start_pos,
+                    item_count=item_count))
         except BadRequestError as e:
             return _make_error(400, e.message)
         except Exception as e:
