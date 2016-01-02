@@ -37,7 +37,7 @@ def get_post_jobs():
             return _make_error(500, e.message)
     else:
         start_pos = request.args.get('start_pos', None)
-        items_count = request.args.get('item_count', None)
+        item_count = request.args.get('item_count', None)
         try:
             return _make_response(
                 get_jobs(
@@ -54,7 +54,7 @@ def get_jobs_results():
     start_time = request.args.get('start_time', None)
     end_time = request.args.get('end_time', None)
     start_pos = request.args.get('start_pos', None)
-    item_count = request.args.get('items_count', None)
+    item_count = request.args.get('item_count', None)
     try:
         return _make_response(
             job_results(
