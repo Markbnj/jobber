@@ -78,3 +78,16 @@ def delete_job(job_id):
     # remove the key from redis
     # if the key isn't found raise NotFoundError
     return {"job_id":job_id}
+
+def update_job(job):
+    try:
+        rd = StrictRedis(host='localhost', port=6379)
+    except Exception as e:
+        syslog.syslog(syslog.LOG_ERR, "{}".format(e))
+        raise InternalError("Failed to create database interface")
+    # assert that the key is in redis
+    # if it isn't raise NotFoundError
+    # validate the job
+    # upsert job into redis at hash/key
+    # update the crontab
+    return job

@@ -2,7 +2,7 @@ import argparse
 import syslog
 import json
 from flask import Flask, request, make_response
-from jobs import add_job, get_jobs, job_results, get_job, delete_job
+from jobs import add_job, get_jobs, job_results, get_job, delete_job, update_job
 from jobs import BadRequestError, NotFoundError, InternalError
 
 
@@ -79,17 +79,18 @@ def get_put_delete_job(job_id):
         except Exception as e:
             return _make_error(500, e.message)
     elif request.method == 'PUT':
-        # path: job_id
-        # body: job definition as application/json
-        # deserialize and validate the json request body
-        # if validation fails...
-        #     return 400 bad request
-        # put the request body to the id/key in redis
-        # if the key doesn't exist... 
-        #     return 404 not found
-        # update the crontab if needed
-        # return 200 OK
-        return "Update job {} definition here.\n".format(job_id)
+        try:
+            job = request.json
+            if 'job_id' not in job:
+                job['job_id'] = job_id
+        except:
+            return _make_error(400, "Missing or incorrect job data")
+        try:
+            return _make_response(response=update_job(job))
+        except BadRequestError as e:
+            return _make_error(400, e.message)
+        except Exception as e:
+            return _make_error(500, e.message)
     else:
         try:
             return _make_response(response=get_job(job_id))
