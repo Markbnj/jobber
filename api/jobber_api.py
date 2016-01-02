@@ -31,7 +31,7 @@ def _make_response(status, response=None):
     """
     resp = Response()
     resp.headers['Content-Type'] = 'application/json'
-    resp.set_data(response)
+    resp.set_data(json.dumps(response))
     resp.status = status
     return resp
 

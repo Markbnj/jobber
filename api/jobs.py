@@ -43,5 +43,5 @@ def get_jobs(start_pos=None, item_count=None):
     # optionally offset to start_pos
     # read either to end or item_count, whichever comes first
     # return resulting subset
-    return {'start_pos':start_pos,'item_count':item_count}
+    return {"start_pos":start_pos,"item_count":item_count}
     pass
