@@ -42,4 +42,4 @@ run:
 
 run-debug:
 	($(DOCKER_CONTAINER_LIST) | awk '$$NF == "$(IMAGE_NAME)" {exit 1}') || $(DOCKER_RM) $(IMAGE_NAME)
-	$(DOCKER_RUN) -h $(IMAGE_NAME) --name=$(IMAGE_NAME) -e "IFACE=0.0.0.0" -e "PORT=5000" -e "ADMIN_PORT=8080" -p 5000:5000 -p 8080:8080 $(REGISTRY_BASE)/$(IMAGE_NAME):$(TAG) "/usr/local/bin/jobber/start-jobber.sh -d"
+	$(DOCKER_RUN) -h $(IMAGE_NAME) --name=$(IMAGE_NAME) -e "IFACE=0.0.0.0" -e "PORT=5000" -e "ADMIN_PORT=8080" -p 5000:5000 -p 8080:8080 $(REGISTRY_BASE)/$(IMAGE_NAME):$(TAG) /usr/local/bin/jobber/start-jobber.sh -d

@@ -57,6 +57,7 @@ if $debug; then
     echo "Jobber container started in debug mode"
     echo "Use ./debug-api to start the API services interactively (ctrl-c to exit)"
     echo "Use ./debug-admin to start the admin services interactively (ctrl-c to exit)"
+    cd /usr/local/bin/jobber
 else
     # run the services in production mode
     logger -t 'jobber startup' -p local0.info "jobber services starting in production mode"
