@@ -30,7 +30,7 @@ def get_post_jobs():
     if request.method == 'POST':
         job = request.json
         try:
-            return _make_response(add_job(job))
+            return _make_response(response=add_job(job))
         except BadRequestError as e:
             return _make_error(400, e.message)
         except Exception as e:
@@ -39,8 +39,7 @@ def get_post_jobs():
         start_pos = request.args.get('start_pos', None)
         item_count = request.args.get('item_count', None)
         try:
-            return _make_response(
-                get_jobs(
+            return _make_response(response=get_jobs(
                     start_pos=start_pos,
                     item_count=item_count))
         except BadRequestError as e:
@@ -56,8 +55,7 @@ def get_jobs_results():
     start_pos = request.args.get('start_pos', None)
     item_count = request.args.get('item_count', None)
     try:
-        return _make_response(
-            job_results(
+        return _make_response(response=job_results(
                 job_id=None,
                 start_time=start_time, 
                 end_time=end_time, 
