@@ -2,7 +2,7 @@ import argparse
 import syslog
 import json
 from flask import Flask, request, Response
-from jobs import add_job, get_jobs
+from jobs import add_job, get_jobs, job_results
 from jobs import BadRequestError, NotFoundError, InternalError
 
 
@@ -44,32 +44,37 @@ def get_post_jobs():
             return _make_response("200", add_job(job))
         except BadRequestError as e:
             return _make_error("400", e.message)
-        except NotFoundError as e:
-            return _make_error("404", e.message)
         except Exception as e:
             return _make_error("500", e.message)
     else:
-        start = request.args.get('start_pos', None)
-        items = request.args.get('item_count', None)
+        start_pos = request.args.get('start_pos', None)
+        items_count = request.args.get('item_count', None)
         try:
             return _make_response("200", get_jobs(start, items))
         except BadRequestError as e:
             return _make_error("400", e.message)
-        except NotFoundError as e:
-            return _make_error("404", e.message)
         except Exception as e:
             return _make_error("500", e.message)
 
 
 @app.route('/jobs/results/', methods=['GET'])
 def get_jobs_results():
-    # querystring: start_time
-    # querystring: end_time
-    # querystring: start_pos
-    # querystring: total_items
-    # read and deseralize the job run results
-    # build and return PagedJobResults structure as application/json
-    return "Get run results for all jobs here.\n"
+    start_time = request.args.get('start_time', None)
+    end_time = request.args.get('end_time', None)
+    start_pos = request.args.get('start_pos', None)
+    item_count = request.args.get('items_count', None)
+    try:
+        return _make_response("200", 
+            job_results(
+                job_id=None,
+                start_time=start_time, 
+                end_time=end_time, 
+                start_pos=start_pos, 
+                item_count=item_count))
+        except BadRequestError as e:
+            return _make_error("400", e.message)
+        except Exception as e:
+            return _make_error("500", e.message)
 
 
 @app.route('/jobs/<job_id>/', methods=['GET','PUT','DELETE'])
