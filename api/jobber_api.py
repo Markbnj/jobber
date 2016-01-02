@@ -1,7 +1,7 @@
 import argparse
 import syslog
 import json
-from flask import Flask, request, Response
+from flask import Flask, request, make_response
 from jobs import add_job, get_jobs, job_results
 from jobs import BadRequestError, NotFoundError, InternalError
 
@@ -10,53 +10,40 @@ app = Flask(__name__)
 
 
 def _make_error(status, message):
-    """
-    Takes an http status code >= 400 and a message and returns
-    a properly formatted error response
-    """
     error = {}
     error['code'] = status
     error['message'] = message
     error['fields'] = ""
-    resp = Response(json.dumps(error))
+    resp = make_response(json.dumps(error), status)
     resp.headers['Content-Type'] = 'application/json'
-    resp.status = status
     return resp
 
 
-def _make_response(status, response=None):
-    """
-    Takes an http status code >=200 and a response in json format
-    and returns a properly formatted response object
-    """
-    resp = Response()
+def _make_response(status=200, response=None):
+    resp = make_response(json.dumps(response), status)
     resp.headers['Content-Type'] = 'application/json'
-    resp.set_data(json.dumps(response))
-    resp.status = status
     return resp
 
 
 @app.route('/jobs/', methods=['GET', 'POST'])
 def get_post_jobs():
-    raise Exception("test failure")
-
     if request.method == 'POST':
         job = request.json
         try:
-            return _make_response("200", add_job(job))
+            return _make_response(add_job(job))
         except BadRequestError as e:
-            return _make_error("400", e.message)
+            return _make_error(400, e.message)
         except Exception as e:
-            return _make_error("500", e.message)
+            return _make_error(500, e.message)
     else:
         start_pos = request.args.get('start_pos', None)
         items_count = request.args.get('item_count', None)
         try:
-            return _make_response("200", get_jobs(start, items))
+            return _make_response(get_jobs(start, items))
         except BadRequestError as e:
-            return _make_error("400", e.message)
+            return _make_error(400, e.message)
         except Exception as e:
-            return _make_error("500", e.message)
+            return _make_error(500, e.message)
 
 
 @app.route('/jobs/results/', methods=['GET'])
@@ -66,7 +53,7 @@ def get_jobs_results():
     start_pos = request.args.get('start_pos', None)
     item_count = request.args.get('items_count', None)
     try:
-        return _make_response("200", 
+        return _make_response(
             job_results(
                 job_id=None,
                 start_time=start_time, 
@@ -74,9 +61,9 @@ def get_jobs_results():
                 start_pos=start_pos, 
                 item_count=item_count))
     except BadRequestError as e:
-        return _make_error("400", e.message)
+        return _make_error(400, e.message)
     except Exception as e:
-        return _make_error("500", e.message)
+        return _make_error(500, e.message)
 
 
 @app.route('/jobs/<job_id>/', methods=['GET','PUT','DELETE'])
