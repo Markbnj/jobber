@@ -104,14 +104,21 @@ def get_put_delete_job(job_id):
 
 @app.route('/jobs/<job_id>/results/', methods=['GET'])
 def get_job_results(job_id):
-    # path: job_id
-    # querystring: start_time
-    # querystring: end_time
-    # querystring: start_pos
-    # querystring: total_items
-    # read and deseralize the job run results
-    # build and return PagedJobResults structure as application/json
-    return "Get run results for job {} here.\n".format(job_id)
+    start_time = request.args.get('start_time', None)
+    end_time = request.args.get('end_time', None)
+    start_pos = request.args.get('start_pos', None)
+    item_count = request.args.get('item_count', None)
+    try:
+        return _make_response(response=job_results(
+                job_id=job_id,
+                start_time=start_time, 
+                end_time=end_time, 
+                start_pos=start_pos, 
+                item_count=item_count))
+    except BadRequestError as e:
+        return _make_error(400, e.message)
+    except Exception as e:
+        return _make_error(500, e.message)
     
 
 if __name__ == "__main__":
