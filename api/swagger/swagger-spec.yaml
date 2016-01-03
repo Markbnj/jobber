@@ -12,18 +12,24 @@ produces:
 definitions:
   Port:
     type: object
+    required:
+    - port
     properties:
       port:
         type: integer
         description: port number in container
+        minimum: 1024
+        maximum: 65535
       hostPort:
         type: integer
         description: port mapped on host
-      name:
-        type: string
-        description: optional name
+        minimum: 1024
+        maximum: 65535
   Envvar:
     type: object
+    required:
+    - name
+    - value
     properties:
       name:
         type: string
@@ -33,10 +39,10 @@ definitions:
         description: value of the variable
   Volume:
     type: object
+    required:
+    - hostPath
+    - containerPath
     properties:
-      name:
-        type: string
-        description: optional name for a volume
       hostPath:
         type: string
         description: path to the volume on the host
@@ -45,10 +51,10 @@ definitions:
         type: string
   Link:
     type: object
+    required:
+    - linkContainer
+    - linkName
     properties:
-      name:
-        type: string
-        description: optional name for a link
       linkContainer:
         type: string
         description: name of the container to link to
@@ -57,6 +63,8 @@ definitions:
         description: name container will be linked as
   Template:
     type: object
+    required:
+    - image
     properties:
       name:
         type: string
@@ -66,13 +74,16 @@ definitions:
         description: URL to job image in container repository.
       replicas:
         type: integer
-        description: 'number of containers to launch, defaults to 1'
+        description: number of containers to launch
+        minimum: 1
+        default: 1
       command:
         type: string
         description: command to exec in the container
       pullAlways:
         type: boolean
         description: true if the image should always be pulled.
+        default: true
       ports:
         type: array
         items:
@@ -102,23 +113,33 @@ definitions:
       minutes:
         type: string
         description: 'minute count, equivalent to cron minutes column'
+        default: '*'
       hours:
         type: string
         description: 'hour count, equivalent to cron hours column'
+        default: '*'
       dayOfMonth:
         type: string
         description: 'day of month, equivalent to cron day of month column'
+        default: '*'
       month:
         type: string
         description: 'month, equivalent to cron month column'
+        default: '*'
       dayOfWeek:
         type: string
         description: 'day of week, equivalent to cron day of week column'
+        default: '*'
       year:
         type: string
         description: 'year, equivalent to cron year column'
+        default: '*'
   Job:
     type: object
+    required:
+    - name
+    - templates
+    - schedule
     properties:
       job_id:
         type: string
@@ -137,16 +158,24 @@ definitions:
         $ref: '#/definitions/Schedule'
   PagedJobs:
     type: object
+    required:
+    - items
+    - total_items
+    - start_pos
+    - results
     properties:
       items:
         type: integer
         description: the number of results returned
+        minimum: 0
       total_items:
         type: integer
         description: the total number of items in the result set
+        minimum: 0
       start_pos:
         type: integer
         description: ordinal position of first returned item in result set
+        minimum: 0
       results:
         type: array
         items:
@@ -154,6 +183,12 @@ definitions:
         description: list of Job objects
   JobResult:
     type: object
+    required:
+    - job_id
+    - job_name
+    - started
+    - exited
+    - exitCode
     properties:
       job_id:
         type: string
@@ -177,16 +212,24 @@ definitions:
         description: last log message received from job
   PagedJobResults:
     type: object
+    required:
+    - items
+    - total_items
+    - start_pos
+    - results
     properties:
       items:
         type: integer
         description: the number of results returned
+        minimum: 0
       total_items:
         type: integer
         description: the total number of items in the result set
+        minimum: 0
       start_pos:
         type: integer
         description: ordinal position of first returned item in result set
+        minimum: 0
       results:
         type: array
         items:
@@ -197,10 +240,10 @@ definitions:
     properties:
       code:
         type: integer
-        format: int32
+        description: the http status code
+        minimum: 400
+        maximum: 599
       message:
-        type: string
-      fields:
         type: string
 paths:
   /jobs:
