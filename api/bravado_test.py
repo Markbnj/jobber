@@ -55,12 +55,22 @@ job_json = """{
 
 job_dict = json.loads(job_json)
 
+def _format_field_path(absolute_path):
+    path = []
+    for part in absolute_path:
+        if type(part) in [unicode, str]:
+            path.append(part)
+        elif type(part) is int:
+            path[-1] = path[-1] + "[{}]".format(part)
+    return path.join('')
+
 try:
     validate_object(spec, job_spec, job_dict)
 except Exception as e:
-    if e is ValidationError:
+    if type(e) is ValidationError:
         print "Validation failed"
-        print e.message
-        print e.absolute_path
+        print "Field: {}".format(_format_field_path(e.absolute_path))
+        print "Error: {}".format(e.message)
     else:
+        print "Exception of type {}:".format(type(e))
         print e
