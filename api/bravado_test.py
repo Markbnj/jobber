@@ -62,7 +62,7 @@ def _format_field_path(absolute_path):
             path.append(part)
         elif type(part) is int:
             path[-1] = path[-1] + "[{}]".format(part)
-    return ''.join(path)
+    return '.'.join(path)
 
 try:
     validate_object(spec, job_spec, job_dict)
