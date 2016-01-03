@@ -17,7 +17,7 @@ spec = Spec.from_dict(spec_as_dict, config=config)
 
 job_json = """{
     "name":"test-job-01",
-    "description":21,
+    "description":"A test job definition",
     "templates": [{
         "name":"jobber-test",
         "image":"markbnj/jobber-testjob",
@@ -25,20 +25,20 @@ job_json = """{
         "command":"/bin/bash",
         "pullAlways": true,
         "ports": [
-            {"port":6000,"hostPort":8000,"name":"some fake port"},
-            {"port":6001,"hostPort":8001,"name":"another fake port"}
+            {"port":6000,"hostPort":8000},
+            {"port":6001,"hostPort":8001}
         ],
         "env": [
             {"name":"VAR1", "value": "VALUE1"},
             {"name":"VAR2", "value": "VALUE2"}
         ],
         "volumes": [
-            {"name":"VOL1", "hostPath":"/tmp/test-job", "containerPath":"/tmp"},
-            {"name":"VOL2", "hostPath":"/var/log/test-job", "containerPath":"/var/log"}
+            {"hostPath":"/tmp/test-job", "containerPath":"/tmp"},
+            {"hostPath":"/var/log/test-job", "containerPath":"/var/log"}
         ],
         "links": [
-            {"name":"LINK1", "linkContainer":"LINKCNTR1", "linkName":"LINKCNTR1"},
-            {"name":"LINK2", "linkContainer":"LINKCNTR2", "linkName":"LINKCNTR2"}
+            {"linkContainer":"LINKCNTR1", "linkName":"LINKCNTR1"},
+            {"linkContainer":"LINKCNTR2", "linkName":"LINKCNTR2"}
         ]
     }],
     "schedule": {
@@ -54,4 +54,7 @@ job_json = """{
 
 job_dict = json.loads(job_json)
 
-validate_object(spec, job_spec, job_dict)
+try:
+    validate_object(spec, job_spec, job_dict)
+except Exception as e:
+    import ipdb;ipdb.set_trace()
