@@ -79,14 +79,9 @@ def get_put_delete_job(job_id):
         except Exception as e:
             return _make_error(500, e.message)
     elif request.method == 'PUT':
+        job = request.json
         try:
-            job = request.json
-            if 'job_id' not in job:
-                job['job_id'] = job_id
-        except:
-            return _make_error(400, "Missing or incorrect job data")
-        try:
-            return _make_response(response=update_job(job))
+            return _make_response(response=update_job(job_id, job))
         except BadRequestError as e:
             return _make_error(400, e.message)
         except Exception as e:
