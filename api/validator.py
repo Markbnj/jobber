@@ -15,7 +15,7 @@ bravado_config = {
 
 
 dir_path = os.path.dirname(os.path.abspath(__file__))
-spec_path = os.path.join(dir_path, "swagger/swagger.json")
+spec_path = os.path.join(dir_path, "swagger/swagger-spec.json")
 spec_dict = json.loads(open(spec_path,'r').read())
 spec = Spec.from_dict(spec_dict, config=bravado_config)
 Job = spec_dict['definitions']['Job']
