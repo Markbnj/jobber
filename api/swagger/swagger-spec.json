@@ -1,0 +1,585 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Jobber API",
+        "description": "Container-based job scheduler for Compose and kubernetes",
+        "version": "1.0.0"
+    },
+    "host": "jobber",
+    "schemes": [
+        "http"
+    ],
+    "basePath": "/v1",
+    "produces": [
+        "application/json"
+    ],
+    "definitions": {
+        "Port": {
+            "type": "object",
+            "properties": {
+                "port": {
+                    "type": "integer",
+                    "description": "port number in container"
+                },
+                "hostPort": {
+                    "type": "integer",
+                    "description": "port mapped on host"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "optional name"
+                }
+            }
+        },
+        "Envvar": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "the name of the variable to set in the container"
+                },
+                "value": {
+                    "type": "string",
+                    "description": "value of the variable"
+                }
+            }
+        },
+        "Volume": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "optional name for a volume"
+                },
+                "hostPath": {
+                    "type": "string",
+                    "description": "path to the volume on the host"
+                },
+                "containerPath": {
+                    "description": "path inside the container",
+                    "type": "string"
+                }
+            }
+        },
+        "Link": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "optional name for a link"
+                },
+                "linkContainer": {
+                    "type": "string",
+                    "description": "name of the container to link to"
+                },
+                "linkName": {
+                    "type": "string",
+                    "description": "name container will be linked as"
+                }
+            }
+        },
+        "Template": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "name for the container"
+                },
+                "image": {
+                    "type": "string",
+                    "description": "URL to job image in container repository."
+                },
+                "replicas": {
+                    "type": "integer",
+                    "description": "number of containers to launch, defaults to 1"
+                },
+                "command": {
+                    "type": "string",
+                    "description": "command to exec in the container"
+                },
+                "pullAlways": {
+                    "type": "boolean",
+                    "description": "true if the image should always be pulled."
+                },
+                "ports": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Port"
+                    },
+                    "description": "array of ports the container should expose"
+                },
+                "env": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Envvar"
+                    },
+                    "description": "array of environment variables to be set in container"
+                },
+                "volumes": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Volume"
+                    },
+                    "description": "array of volume mounts"
+                },
+                "links": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Link"
+                    },
+                    "description": "array of container links"
+                }
+            }
+        },
+        "Schedule": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "description": "text comment on schedule"
+                },
+                "minutes": {
+                    "type": "string",
+                    "description": "minute count, equivalent to cron minutes column"
+                },
+                "hours": {
+                    "type": "string",
+                    "description": "hour count, equivalent to cron hours column"
+                },
+                "dayOfMonth": {
+                    "type": "string",
+                    "description": "day of month, equivalent to cron day of month column"
+                },
+                "month": {
+                    "type": "string",
+                    "description": "month, equivalent to cron month column"
+                },
+                "dayOfWeek": {
+                    "type": "string",
+                    "description": "day of week, equivalent to cron day of week column"
+                },
+                "year": {
+                    "type": "string",
+                    "description": "year, equivalent to cron year column"
+                }
+            }
+        },
+        "Job": {
+            "type": "object",
+            "properties": {
+                "job_id": {
+                    "type": "string",
+                    "description": "Unique identifier representing a specific scheduled job."
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Unique name of the job."
+                },
+                "description": {
+                    "type": "string",
+                    "description": "Description of job and what it does."
+                },
+                "templates": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Template"
+                    }
+                },
+                "schedule": {
+                    "$ref": "#/definitions/Schedule"
+                }
+            }
+        },
+        "PagedJobs": {
+            "type": "object",
+            "properties": {
+                "items": {
+                    "type": "integer",
+                    "description": "the number of results returned"
+                },
+                "total_items": {
+                    "type": "integer",
+                    "description": "the total number of items in the result set"
+                },
+                "start_pos": {
+                    "type": "integer",
+                    "description": "ordinal position of first returned item in result set"
+                },
+                "results": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Job"
+                    },
+                    "description": "list of Job objects"
+                }
+            }
+        },
+        "JobResult": {
+            "type": "object",
+            "properties": {
+                "job_id": {
+                    "type": "string",
+                    "description": "Unique identifier representing a specific scheduled job."
+                },
+                "job_name": {
+                    "type": "string",
+                    "description": "Unique name of the job"
+                },
+                "started": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Timestamp when job was started"
+                },
+                "exited": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Timestamp when job process exited"
+                },
+                "exitCode": {
+                    "type": "integer",
+                    "description": "exit code of the job process"
+                },
+                "lastLog": {
+                    "type": "string",
+                    "description": "last log message received from job"
+                }
+            }
+        },
+        "PagedJobResults": {
+            "type": "object",
+            "properties": {
+                "items": {
+                    "type": "integer",
+                    "description": "the number of results returned"
+                },
+                "total_items": {
+                    "type": "integer",
+                    "description": "the total number of items in the result set"
+                },
+                "start_pos": {
+                    "type": "integer",
+                    "description": "ordinal position of first returned item in result set"
+                },
+                "results": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/JobResult"
+                    },
+                    "description": "list of JobResult objects"
+                }
+            }
+        },
+        "Error": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "fields": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "paths": {
+        "/jobs": {
+            "get": {
+                "summary": "List scheduled jobs",
+                "description": "Returns a list of all currently scheduled jobs.\n",
+                "tags": [
+                    "Jobs"
+                ],
+                "parameters": [
+                    {
+                        "name": "start_pos",
+                        "type": "integer",
+                        "in": "query",
+                        "required": false,
+                        "description": "ordinal position of first returned item in result set"
+                    },
+                    {
+                        "name": "item_count",
+                        "type": "integer",
+                        "in": "query",
+                        "required": false,
+                        "description": "number of items returned from result set"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An array of Job objects",
+                        "schema": {
+                            "$ref": "#/definitions/PagedJobs"
+                        }
+                    },
+                    "500": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Add a new scheduled job",
+                "description": "Adds a new scheduled job to the database.\n",
+                "tags": [
+                    "Jobs"
+                ],
+                "parameters": [
+                    {
+                        "name": "job",
+                        "schema": {
+                            "$ref": "#/definitions/Job"
+                        },
+                        "in": "body",
+                        "required": true,
+                        "description": "the new data for the job"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Succeeded",
+                        "schema": {
+                            "type": "string",
+                            "description": "job_id of the new job"
+                        }
+                    },
+                    "500": {
+                        "description": "unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/jobs/results": {
+            "get": {
+                "summary": "Return a list of job results",
+                "description": "Returns a list of JobResult objects for all scheduled jobs, optionally\nfiltered by date and time.\n",
+                "tags": [
+                    "Jobs",
+                    "Reports"
+                ],
+                "parameters": [
+                    {
+                        "name": "start_time",
+                        "type": "string",
+                        "format": "date-time",
+                        "in": "query",
+                        "required": false,
+                        "description": "optional start time for the report"
+                    },
+                    {
+                        "name": "end_time",
+                        "type": "string",
+                        "format": "date-time",
+                        "in": "query",
+                        "required": false,
+                        "description": "optional end time for the report"
+                    },
+                    {
+                        "name": "start_pos",
+                        "type": "integer",
+                        "in": "query",
+                        "required": false,
+                        "description": "ordinal position of first returned item in result set"
+                    },
+                    {
+                        "name": "item_count",
+                        "type": "integer",
+                        "in": "query",
+                        "required": false,
+                        "description": "number of items returned from result set"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Succeeded",
+                        "schema": {
+                            "$ref": "#/definitions/PagedJobResults"
+                        }
+                    },
+                    "500": {
+                        "description": "unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/jobs/{job_id}": {
+            "get": {
+                "summary": "get a specific scheduled job",
+                "description": "Returns the description of a specific job\n",
+                "tags": [
+                    "Jobs"
+                ],
+                "parameters": [
+                    {
+                        "name": "job_id",
+                        "type": "string",
+                        "in": "path",
+                        "required": true,
+                        "description": "id of the job to return"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A Job object",
+                        "schema": {
+                            "$ref": "#/definitions/Job"
+                        }
+                    },
+                    "404": {
+                        "description": "job ID not found"
+                    },
+                    "500": {
+                        "description": "unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "amend a specific scheduled job",
+                "description": "Updates the definition of a job\n",
+                "tags": [
+                    "Jobs"
+                ],
+                "parameters": [
+                    {
+                        "name": "job_id",
+                        "type": "string",
+                        "in": "path",
+                        "required": true,
+                        "description": "id of the job to return"
+                    },
+                    {
+                        "name": "job",
+                        "schema": {
+                            "$ref": "#/definitions/Job"
+                        },
+                        "in": "body",
+                        "required": true,
+                        "description": "the new data for the job"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Succeeded"
+                    },
+                    "404": {
+                        "description": "job ID not found"
+                    },
+                    "500": {
+                        "description": "unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "remove a scheduled job",
+                "description": "Removes a scheduled job by job_id. This will not interrupt a running job.\n",
+                "tags": [
+                    "Jobs"
+                ],
+                "parameters": [
+                    {
+                        "name": "job_id",
+                        "type": "string",
+                        "in": "path",
+                        "required": true,
+                        "description": "id of the job to return"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Succeeded"
+                    },
+                    "404": {
+                        "description": "job ID not found"
+                    },
+                    "500": {
+                        "description": "unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/jobs/{job_id}/results": {
+            "get": {
+                "summary": "Return a list of job results for a specific job",
+                "description": "Returns a list of JobResult objects for all scheduled jobs, optionally\nfiltered by date and time.\n",
+                "tags": [
+                    "Jobs",
+                    "Reports"
+                ],
+                "parameters": [
+                    {
+                        "name": "job_id",
+                        "type": "string",
+                        "in": "path",
+                        "required": true,
+                        "description": "id of the job to report on"
+                    },
+                    {
+                        "name": "start_time",
+                        "type": "string",
+                        "format": "date-time",
+                        "in": "query",
+                        "required": false,
+                        "description": "optional start time for the report"
+                    },
+                    {
+                        "name": "end_time",
+                        "type": "string",
+                        "format": "date-time",
+                        "in": "query",
+                        "required": false,
+                        "description": "optional end time for the report"
+                    },
+                    {
+                        "name": "start_pos",
+                        "type": "integer",
+                        "in": "query",
+                        "required": false,
+                        "description": "ordinal position of first returned item in result set"
+                    },
+                    {
+                        "name": "item_count",
+                        "type": "integer",
+                        "in": "query",
+                        "required": false,
+                        "description": "number of items returned from result set"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Succeeded",
+                        "schema": {
+                            "$ref": "#/definitions/PagedJobResults"
+                        }
+                    },
+                    "500": {
+                        "description": "unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
