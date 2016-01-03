@@ -29,8 +29,8 @@ job_json = """{
             {"port":6001,"hostPort":8001,"name":"another fake port"}
         ],
         "env": [
-            {"name: "VAR1", 'value': "VALUE1"},
-            {"name: "VAR2", 'value': "VALUE2"}
+            {"name":"VAR1", "value": "VALUE1"},
+            {"name":"VAR2", "value": "VALUE2"}
         ],
         "volumes": [
             {"name":"VOL1", "hostPath":"/tmp/test-job", "containerPath":"/tmp"},
