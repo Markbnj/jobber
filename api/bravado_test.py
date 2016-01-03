@@ -1,4 +1,5 @@
 import json
+from jsonschema.exceptions import ValidationError
 from bravado_core.spec import Spec
 from bravado_core.validate import validate_object
 
@@ -57,4 +58,9 @@ job_dict = json.loads(job_json)
 try:
     validate_object(spec, job_spec, job_dict)
 except Exception as e:
-    import ipdb;ipdb.set_trace()
+    if e is ValidationError:
+        print "Validation failed"
+        print e.message
+        print e.absolute_path
+    else:
+        print e
