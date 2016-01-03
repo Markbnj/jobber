@@ -35,5 +35,5 @@ def validate_job(job):
     try:
         validate_object(spec, Job, job)
     except ValidationError as e:
-        message = "Invalid job definition:\n Field: {}\n Error: {}".format(_format_field_path(e.absolute_path))
+        message = "Invalid job definition:\n Field: {}\n Error: {}".format(_format_field_path(e.absolute_path),e.message)
         raise BadRequestError(message)
