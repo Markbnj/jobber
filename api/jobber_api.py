@@ -3,7 +3,7 @@ import syslog
 import json
 from flask import Flask, request, make_response
 from jobs import add_job, get_jobs, job_results, get_job, delete_job, update_job
-from jobs import BadRequestError, NotFoundError, InternalError
+from api_error import BadRequestError, NotFoundError, InternalError
 
 
 app = Flask(__name__)

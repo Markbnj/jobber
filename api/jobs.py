@@ -2,26 +2,16 @@ import syslog
 import json
 from redis import StrictRedis
 from crontabs import add_job, remove_job, sync_jobs
+from api_error import BadRequestError, NotFoundError, InternalError
+from validator import validate_job
 
 
 REDIS_HOST = 'localhost'
 REDIS_PORT = 6379
 
 
-class BadRequestError(Exception):
-    pass
-
-
-class NotFoundError(Exception):
-    pass
-
-
-class InternalError(Exception):
-    pass
-
-
 def add_job(job):
-    _validate_job(job)
+    validate_job(job)
     rd = _get_redis()
 
     # hash the name
@@ -67,6 +57,7 @@ def delete_job(job_id):
 
 
 def update_job(job_id, job):
+    validate_job(job)
     rd = _get_redis()
     # assert that the key is in redis
     # if it isn't raise NotFoundError
@@ -82,10 +73,3 @@ def _get_redis():
     except Exception as e:
         syslog.syslog(syslog.LOG_ERR, "{}".format(e))
         raise InternalError("Failed to create database interface")
-
-
-def _validate_job(job):
-    # validate the job
-    # raise BadRequestError on fail with relevant msg
-    pass
-
