@@ -35,7 +35,8 @@ RUN cd /home &&\
  rm -rf redis-stable &&\
  rm redis-stable.tar.gz &&\
  mkdir /etc/redis &&\
- mkdir -p /var/redis/6379
+ mkdir -p /var/redis/6379 &&\
+ mkdir -p /etc/jobber/conf.d
 
 ADD 6379.conf /etc/redis/6379.conf
 ADD rsyslog.conf /etc/rsyslog.conf
