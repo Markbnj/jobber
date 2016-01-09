@@ -1,5 +1,5 @@
 """
-.. module:: jobber_api.py
+.. module:: api.jobber_api.py
    :platform: Unix
    :synopsis: Implements the flask app and request handlers for the jobber api.
 
@@ -13,6 +13,7 @@ import json
 from flask import Flask, request, make_response
 from jobs import add_job, get_jobs, job_results, get_job, delete_job, update_job
 from api_error import BadRequestError, NotFoundError, InternalError
+import jobber.config as config
 
 
 app = Flask(__name__)
@@ -217,8 +218,8 @@ def get_job_results(job_id):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="jobber api service")
-    parser.add_argument("-p", "--port", help='The jobber api service will listen on this port', default=5000)
-    parser.add_argument("-i", "--iface", help='The jobber api service will bind to this interface', default="127.0.0.1")
+    parser.add_argument("-p", "--port", help='The jobber api service will listen on this port', default=config.SERVICE_PORT)
+    parser.add_argument("-i", "--iface", help='The jobber api service will bind to this interface', default=config.IFACE)
     parser.add_argument("-d", "--debug", help='Start the service in debug mode', action="store_true")
     args = parser.parse_args()
     
