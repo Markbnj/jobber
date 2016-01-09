@@ -1,3 +1,12 @@
+"""
+.. module:: jobber_api.py
+   :platform: Unix
+   :synopsis: Implements the flask app and request handlers for the jobber api.
+
+.. moduleauthor:: Mark Betz <betz.mark@gmail.com>
+
+
+"""
 import argparse
 import syslog
 import json
@@ -9,7 +18,16 @@ from api_error import BadRequestError, NotFoundError, InternalError
 app = Flask(__name__)
 
 
-def _make_error(status, message):
+def _make_error(status=500, message):
+    """ Utility method used to create an error response.
+
+    Args:
+        status (int):  The http status code to return.
+        message (str):  A message to include with the response.
+
+    Returns:
+        Error (str):  The error information in json format.
+    """
     error = {}
     error['code'] = status
     error['message'] = message
@@ -20,6 +38,15 @@ def _make_error(status, message):
 
 
 def _make_response(status=200, response=None):
+    """ Utility method used to create a successful response.
+
+    Args:
+        status (int):  The http status code to return.
+        response (dict):  The response data as a python dict.
+
+    Returns:
+        response (dict):  The completed response object.
+    """
     resp = make_response(json.dumps(response), status)
     resp.headers['Content-Type'] = 'application/json'
     return resp
@@ -27,6 +54,23 @@ def _make_response(status=200, response=None):
 
 @app.route('/jobs/', methods=['GET', 'POST'])
 def get_post_jobs():
+    """ Request handler for /jobs/ path.
+    
+    GET:  returns the list of scheduled Jobs
+    Args:
+        None
+
+    Returns:
+        PagedJobs (str):  A list of Jobs with paging metadata as json
+
+    POST:  adds a scheduled Job to the jobs list
+    Args:
+        job (str):  the Job to be added as json
+
+    Returns:
+        Nothing : if response status >= 200 and <=499
+        Error (str):  json error if response status >=500
+    """
     if request.method == 'POST':
         job = request.json
         try:
@@ -50,6 +94,19 @@ def get_post_jobs():
 
 @app.route('/jobs/results/', methods=['GET'])
 def get_jobs_results():
+    """ Request handler for /jobs/results path.
+
+    GET:  returns a list of results for all scheduled jobs
+    Args:
+        start_time (datetime):  filter results older than the passed datetime
+        end_time (datetime):  filter results younger than the passed datetime
+        start_pos (int):  start returning results at this ordinal position
+        item_count (int):  return this many results
+
+    Returns:
+        PagedJobResults (str):  paged list of job results if response status == 200.
+        Error (str):  json error if response status >= 500
+    """
     start_time = request.args.get('start_time', None)
     end_time = request.args.get('end_time', None)
     start_pos = request.args.get('start_pos', None)
@@ -69,6 +126,35 @@ def get_jobs_results():
 
 @app.route('/jobs/<job_id>/', methods=['GET','PUT','DELETE'])
 def get_put_delete_job(job_id):
+    """ Request handler for the /jobs/<job_id> path.
+
+    GET:  returns the record for a specific job by id.
+    Args:
+        job_id (str):  the unique identifier of the job.
+
+    Returns:
+        Job (str):  job record as json if response status == 200.
+        Error (str):  json error if response status >= 500
+
+    PUT:  amends the record for a specific job by id.
+    Args:
+        job_id (str):  the unique identifier of the job.
+
+    Body:
+        job:  job data in json format.
+    
+    Returns:
+        Nothing:  if response status >= 200 and <= 499.
+        Error (str):  json error if response status >= 500
+
+    DELETE:  removes the record for a specific job by id.
+    Args:
+        job_id (str):  the unique identifier of the job.
+
+    Returns:
+        Nothing:  if response status >= 200 and <= 499.
+        Error (str):  json error if response status >= 500
+    """
     if request.method == 'DELETE':
         try:
             return _make_response(response=delete_job(job_id))
@@ -99,6 +185,19 @@ def get_put_delete_job(job_id):
 
 @app.route('/jobs/<job_id>/results/', methods=['GET'])
 def get_job_results(job_id):
+    """ Request handler for the /jobs/<job_id>/results path.
+
+    GET:
+    Args:
+        start_time (datetime):  filter results older than the passed datetime
+        end_time (datetime):  filter results younger than the passed datetime
+        start_pos (int):  start returning results at this ordinal position
+        item_count (int):  return this many results
+
+    Returns:
+        PagedJobResults (str):  paged list of job results if response status == 200.
+        Error (str):  json error if response status >= 500
+    """
     start_time = request.args.get('start_time', None)
     end_time = request.args.get('end_time', None)
     start_pos = request.args.get('start_pos', None)
