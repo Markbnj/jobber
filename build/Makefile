@@ -18,6 +18,7 @@ clean-base:
 
 clean-jobber:
 	rm -f jobber/image-build.log
+	rm -rf jobber/code
 	rm -rf jobber/temp
 	($(DOCKER_CONTAINER_LIST) | awk '$$NF == "$(IMAGE_NAME)" {exit 1}') || $(DOCKER_RM) $(IMAGE_NAME)
 	($(DOCKER_IMAGE_LIST) | awk '$$NF == "$(REGISTRY_BASE)/$(IMAGE_NAME)"') || $(DOCKER_RMI) $(REGISTRY_BASE)/$(IMAGE_NAME)
@@ -29,7 +30,7 @@ jobber-image:
 	curl -H "Authorization: token $(GITHUB_TOKEN)" -L https://api.github.com/repos/markbnj/jobber/tarball/master -o jobber/jobber.tar.gz
 	mkdir jobber/temp && mkdir jobber/code
 	cd jobber/temp && tar -xzf ../jobber.tar.gz --strip-components=1 && mv jobber ../code/
-	rm -rf temp
+	rm -rf jobber/temp
 	rm jobber/jobber.tar.gz
 	$(DOCKER_BUILD) --tag=$(REGISTRY_BASE)/$(IMAGE_NAME):$(TAG) --rm=true --force-rm=true jobber | tee jobber/image-build.log
 
