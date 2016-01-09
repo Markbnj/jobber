@@ -18,7 +18,7 @@ from api_error import BadRequestError, NotFoundError, InternalError
 app = Flask(__name__)
 
 
-def _make_error(status=500, message):
+def _make_error(status=500, message=None):
     """ Utility method used to create an error response.
 
     Args:
