@@ -1,1 +1,0 @@
-# jobber admin template handlers will live here
