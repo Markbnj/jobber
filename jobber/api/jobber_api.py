@@ -14,7 +14,8 @@ from flask import Flask, request, make_response
 from jobs import add_job, get_jobs, job_results, get_job, delete_job, update_job
 from api_error import BadRequestError, NotFoundError, InternalError
 import config
-from validator import get_swagger
+from validator import get_swagger_spec
+from tests import get_postman_coll
 
 
 app = Flask(__name__)
@@ -54,8 +55,8 @@ def _make_response(status=200, response=None):
     return resp
 
 
-@app.route('/', methods=['GET'])
-def get_spec():
+@app.route('/swagger/', methods=['GET'])
+def get_swagger():
     """ Request handler for the / path.
 
     GET:  returns the jobber API spec as a swagger json doc.
@@ -66,7 +67,7 @@ def get_spec():
         Swagger spec (str):  jobber swagger spec as json doc.
     """
     try:
-        return _make_response(response=get_swagger())
+        return _make_response(response=get_swagger_spec())
     except Exception as e:
         return _make_error(500, e.message)
 
@@ -84,6 +85,23 @@ def get_settings():
     """
     try:
         return _make_response(response=config.get_settings())
+    except Exception as e:
+        return _make_error(500, e.message)
+
+
+@app.route('/postman/', methods=['GET'])
+def get_postman():
+    """ Request handler for the /postman/ path.
+
+    GET:  returns a postman collection for the API endpoints.
+    Args:
+        None
+
+    Returns:
+        Postman collection (str):  postman collection as json doc.
+    """
+    try:
+        return _make_response(response=get_postman_coll())
     except Exception as e:
         return _make_error(500, e.message)
 
