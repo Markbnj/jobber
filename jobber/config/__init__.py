@@ -61,6 +61,17 @@ JOB_LOG_PATH = u'/var/log/jobber/'
 
 
 def import_environment():
+    global SERVICE_PORT
+    global ADMIN_PORT
+    global IFACE
+    global JOB_PATHS
+    global SYNC_CRONTABS_SECS
+    global LOG_PATH
+    global LOG_NAME
+    global LOG_MAX_SIZE
+    global LOG_MAX_LOGS
+    global JOB_LOG_PATH
+
     SERVICE_PORT = os.environ.get('SERVICE_PORT', SERVICE_PORT)
     ADMIN_PORT = os.environ.get('ADMIN_PORT', ADMIN_PORT)
     IFACE = os.environ.get('IFACE', IFACE)
@@ -75,7 +86,17 @@ def import_environment():
 
 def import_config_file():
     global CONFIG_PATH 
-    CONFIG_PATH = os.environ.get('CONFIG_PATH', CONFIG_PATH)
+    global SERVICE_PORT
+    global ADMIN_PORT
+    global IFACE
+    global JOB_PATHS
+    global SYNC_CRONTABS_SECS
+    global LOG_PATH
+    global LOG_NAME
+    global LOG_MAX_SIZE
+    global LOG_MAX_LOGS
+    global JOB_LOG_PATH
+
     if os.path.exists(CONFIG_PATH):
         with open(CONFIG_PATH, 'r') as fconfig:
             config = yaml.safe_load(f)
