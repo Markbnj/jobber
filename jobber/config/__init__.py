@@ -74,7 +74,7 @@ def import_environment():
 
 
 def import_config_file():
-    CONFIG_PATH = os.environ.get('CONFIG_PATH', CONFIG_PATH)
+    global CONFIG_PATH = os.environ.get('CONFIG_PATH', CONFIG_PATH)
     if os.path.exists(CONFIG_PATH):
         with open(CONFIG_PATH, 'r') as fconfig:
             config = yaml.safe_load(f)
