@@ -72,7 +72,7 @@ def get_spec():
 
 
 @app.route('/settings/', methods=['GET'])
-def get_spec():
+def get_settings():
     """ Request handler for the /settings/ path.
 
     GET:  returns the current jobber settings as a json doc.
