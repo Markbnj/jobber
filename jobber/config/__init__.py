@@ -112,7 +112,19 @@ def import_config_file():
         JOB_LOG_PATH = config.get('JOB_LOG_PATH', JOB_LOG_PATH)
 
 def get_settings():
-    pass    
+    return {
+        "CONFIG_PATH": CONFIG_PATH,
+        "SERVICE_PORT": SERVICE_PORT,
+        "ADMIN_PORT": ADMIN_PORT,
+        "IFACE": IFACE,
+        "JOB_PATHS": JOB_PATHS,
+        "SYNC_CRONTABS_SECS": SYNC_CRONTABS_SECS,
+        "LOG_PATH": LOG_PATH,
+        "LOG_NAME": LOG_NAME,
+        "LOG_MAX_SIZE": LOG_MAX_SIZE,
+        "LOG_MAX_LOGS": LOG_MAX_LOGS,
+        "JOB_LOG_PATH": JOB_LOG_PATH,
+    }
 
 import_config_file()
 import_environment()
