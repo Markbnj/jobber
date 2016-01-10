@@ -49,7 +49,7 @@ while getopts hdi:p:a: opt; do
 done
 
 service rsyslog start
-export PYTHONPATH=${PYTHONPATH}"/usr/local/bin/jobber;"
+export PYTHONPATH=${PYTHONPATH}"/usr/local/bin/jobber"
 if $debug; then
     # run the services in debug mode
     logger -t 'jobber startup' -p local0.info "jobber services starting in debug mode"
