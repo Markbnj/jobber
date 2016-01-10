@@ -246,7 +246,23 @@ definitions:
       message:
         type: string
 paths:
-  /:
+  /settings:
+    get:
+      summary: Return current settings
+      description: |
+        Returns the current jobber settings as a json dictionary.
+      tags:
+        - Meta
+      responses:
+        '200':
+          description: The current settings as a json object.
+          schema:
+            type: string
+        '500':
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /swagger:
     get:
       summary: Return swagger API specification
       description: |
@@ -262,16 +278,16 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /settings:
+  /postman:
     get:
-      summary: Return current settings
+      summary: Return postman collection for API endpoints
       description: |
-        Returns the current jobber settings as a json dictionary.
+        Returns a postman collection for endpoint testing in json format.
       tags:
         - Meta
       responses:
         '200':
-          description: The current settings as a json object.
+          description: The postman collection as a json object.
           schema:
             type: string
         '500':

@@ -334,6 +334,75 @@
         }
     },
     "paths": {
+        "/settings": {
+            "get": {
+                "summary": "Return current settings",
+                "description": "Returns the current jobber settings as a json dictionary.\n",
+                "tags": [
+                    "Meta"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The current settings as a json object.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/swagger": {
+            "get": {
+                "summary": "Return swagger API specification",
+                "description": "Returns the jobber API spec as a json swagger doc.\n",
+                "tags": [
+                    "Meta"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The jobber API spec as a json swagger doc.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/postman": {
+            "get": {
+                "summary": "Return postman collection for API endpoints",
+                "description": "Returns a postman collection for endpoint testing in json format.\n",
+                "tags": [
+                    "Meta"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The postman collection as a json object.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
         "/jobs": {
             "get": {
                 "summary": "List scheduled jobs",
