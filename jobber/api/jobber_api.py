@@ -13,7 +13,7 @@ import json
 from flask import Flask, request, make_response
 from jobs import add_job, get_jobs, job_results, get_job, delete_job, update_job
 from api_error import BadRequestError, NotFoundError, InternalError
-import jobber.config as config
+import config
 from validator import get_swagger
 
 
