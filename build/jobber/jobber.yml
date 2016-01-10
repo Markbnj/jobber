@@ -7,10 +7,6 @@
 # Interface that both the API and admin service will bind to
 IFACE: '0.0.0.0'
 
-# Where the config module will look for values to override these
-# settings
-# CONFIG_PATH: '/etc/jobber/jobber.yml'
-
 # Where job definition files will be loaded from. Each path is
 # checked for any .yaml or .json files containing jobs. A path
 # may be a url, in which case a json response is expected.
