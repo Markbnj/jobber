@@ -61,20 +61,20 @@ JOB_LOG_PATH = u'/var/log/jobber/'
 
 
 def import_environment():
-    SERVICE_PORT = os.env.get('SERVICE_PORT', SERVICE_PORT)
-    ADMIN_PORT = os.env.get('ADMIN_PORT', ADMIN_PORT)
-    IFACE = os.env.get('IFACE', IFACE)
-    JOB_PATHS = os.env.get('JOB_PATHS', JOB_PATHS)
-    SYNC_CRONTABS_SECS = os.env.get('SYNC_CRONTABS_SECS', SYNC_CRONTABS_SECS)
-    LOG_PATH = os.env.get('LOG_PATH', LOG_PATH)
-    LOG_NAME = os.env.get('LOG_NAME', LOG_NAME)
-    LOG_MAX_SIZE = os.env.get('LOG_MAX_SIZE', LOG_MAX_SIZE)
-    LOG_MAX_LOGS = os.env.get('LOG_MAX_LOGS', LOG_MAX_LOGS)
-    JOB_LOG_PATH = os.env.get('JOB_LOG_PATH', JOB_LOG_PATH)
+    SERVICE_PORT = os.environ.get('SERVICE_PORT', SERVICE_PORT)
+    ADMIN_PORT = os.environ.get('ADMIN_PORT', ADMIN_PORT)
+    IFACE = os.environ.get('IFACE', IFACE)
+    JOB_PATHS = os.environ.get('JOB_PATHS', JOB_PATHS)
+    SYNC_CRONTABS_SECS = os.environ.get('SYNC_CRONTABS_SECS', SYNC_CRONTABS_SECS)
+    LOG_PATH = os.environ.get('LOG_PATH', LOG_PATH)
+    LOG_NAME = os.environ.get('LOG_NAME', LOG_NAME)
+    LOG_MAX_SIZE = os.environ.get('LOG_MAX_SIZE', LOG_MAX_SIZE)
+    LOG_MAX_LOGS = os.environ.get('LOG_MAX_LOGS', LOG_MAX_LOGS)
+    JOB_LOG_PATH = os.environ.get('JOB_LOG_PATH', JOB_LOG_PATH)
 
 
 def import_config_file():
-    CONFIG_PATH = os.env.get('CONFIG_PATH', CONFIG_PATH)
+    CONFIG_PATH = os.environ.get('CONFIG_PATH', CONFIG_PATH)
     if os.path.exists(CONFIG_PATH):
         with open(CONFIG_PATH, 'r') as fconfig:
             config = yaml.safe_load(f)
@@ -88,6 +88,9 @@ def import_config_file():
         LOG_MAX_SIZE = config.get('LOG_MAX_SIZE', LOG_MAX_SIZE)
         LOG_MAX_LOGS = config.get('LOG_MAX_LOGS', LOG_MAX_LOGS)
         JOB_LOG_PATH = config.get('JOB_LOG_PATH', JOB_LOG_PATH)
+
+def get_settings():
+    pass    
 
 import_config_file()
 import_environment()
