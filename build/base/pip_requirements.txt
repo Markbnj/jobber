@@ -6,3 +6,4 @@ python-crontab>=1.9.5
 functools32>=3.2.0
 bravado-core>=4.0.0
 supervisor>=3.2.0
+pyyaml>=3.11
