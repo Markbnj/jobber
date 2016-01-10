@@ -1,5 +1,5 @@
 # jobber service base image
-FROM debian:wheezy
+FROM debian:jessie
 MAINTAINER Mark Betz <betz.mark@gmail.com>
 
 # disable annoying warnings from installers
