@@ -1,4 +1,4 @@
 #!/bin/bash
 
 echo "Starting jobber API service in debug mode"
-python api/jobber_api.py -i ${IFACE} -p ${PORT} -d
+python api/jobber_api.py --debug

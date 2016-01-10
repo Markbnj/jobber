@@ -1,4 +1,4 @@
 #!/bin/bash
 
 echo "Starting jobber admin service in debug mode"
-python admin/jobber_admin.py -i ${IFACE} -p ${PORT} -d
+python admin/jobber_admin.py --debug

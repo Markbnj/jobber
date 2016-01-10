@@ -1,22 +1,16 @@
 #!/bin/bash
 
 debug=false
-iface=${IFACE}
-port=${PORT}
-admin_port=${ADMIN_PORT}
 
 function help {
     echo "Starts the jobber services inside the container, optionally enabling"
     echo "interactive debugging."
     echo 
-    echo "Usage: `basename $0` [-h] [-d] [-i IFACE] [-p PORT] [-a ADMIN_PORT]"
+    echo "Usage: `basename $0` [-h] [-d]"
     echo
     echo "Options:"
     printf "\t-h\t\tShow this help message\n"
     printf "\t-d\tStart the services in debug mode.\n"
-    printf "\t-i <IFACE>\tInterface to bind the services to (defaults to localhost).\n"
-    printf "\t-p <PORT>\tAPI services port (defaults to 5000).\n"
-    printf "\t-a <ADMIN_PORT>\tAdmin services port (defaults to 8080).\n"
     if [ -z "$1" ]; then
         exit 1
     else
@@ -24,17 +18,8 @@ function help {
     fi
 }
 
-while getopts hdi:p:a: opt; do
+while getopts hd opt; do
     case $opt in
-        a)
-            admin_port=$OPTARG
-            ;;
-        p)
-            port=$OPTARG
-            ;;
-        i)
-            iface=$OPTARG
-            ;;
         d)
             debug=true
             ;;
