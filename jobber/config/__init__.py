@@ -99,7 +99,7 @@ def import_config_file():
 
     if os.path.exists(CONFIG_PATH):
         with open(CONFIG_PATH, 'r') as fconfig:
-            config = yaml.safe_load(f)
+            config = yaml.safe_load(fconfig)
         SERVICE_PORT = config.get('SERVICE_PORT', SERVICE_PORT)
         ADMIN_PORT = config.get('ADMIN_PORT', ADMIN_PORT)
         IFACE = config.get('IFACE', IFACE)
