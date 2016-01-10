@@ -14,6 +14,7 @@ from flask import Flask, request, make_response
 from jobs import add_job, get_jobs, job_results, get_job, delete_job, update_job
 from api_error import BadRequestError, NotFoundError, InternalError
 import jobber.config as config
+from validator import get_swagger
 
 
 app = Flask(__name__)
@@ -51,6 +52,40 @@ def _make_response(status=200, response=None):
     resp = make_response(json.dumps(response), status)
     resp.headers['Content-Type'] = 'application/json'
     return resp
+
+
+@app.route('/', methods=['GET'])
+def get_spec():
+    """ Request handler for the / path.
+
+    GET:  returns the jobber API spec as a swagger json doc.
+    Args:
+        None
+
+    Returns:
+        Swagger spec (str):  jobber swagger spec as json doc.
+    """
+    try:
+        return _make_response(response=get_swagger())
+    except Exception as e:
+        return _make_error(500, e.message)
+
+
+@app.route('/settings/', methods=['GET'])
+def get_spec():
+    """ Request handler for the /settings/ path.
+
+    GET:  returns the current jobber settings as a json doc.
+    Args:
+        None
+
+    Returns:
+        Jobber settings (str):  jobber settings as json doc.
+    """
+    try:
+        return _make_response(response=config.get_settings())
+    except Exception as e:
+        return _make_error(500, e.message)
 
 
 @app.route('/jobs/', methods=['GET', 'POST'])

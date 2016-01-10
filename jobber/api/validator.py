@@ -37,3 +37,7 @@ def validate_job(job):
     except ValidationError as e:
         message = "Invalid job definition:\n Field: {}\n Error: {}".format(_format_field_path(e.absolute_path),e.message)
         raise BadRequestError(message)
+
+def get_swagger():
+    with open(spec_path,'r') as spec:
+        return json.loads(spec.read())
