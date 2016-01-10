@@ -1,8 +1,7 @@
 """
-.. module:: config.__init__.py
+.. module:: jobber.config
    :platform: Unix
-   :synopsis: Defines global settings and imports overrides from the
-    environment and any config file.
+   :synopsis: Defines global settings and imports overrides from the environment and any config file.
 
 .. moduleauthor:: Mark Betz <betz.mark@gmail.com>
 

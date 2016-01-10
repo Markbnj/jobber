@@ -1,3 +1,12 @@
+"""
+.. module:: jobber.api.tests
+   :platform: Unix
+   :synopsis: Implements unit tests and provides utility methods to get test data.
+
+.. moduleauthor:: Mark Betz <betz.mark@gmail.com>
+
+
+"""
 import os
 import json
 

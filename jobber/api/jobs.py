@@ -1,3 +1,12 @@
+"""
+.. module:: jobber.api.jobs.py
+   :platform: Unix
+   :synopsis: Implements all the core functions for CRUD on Job data.
+
+.. moduleauthor:: Mark Betz <betz.mark@gmail.com>
+
+
+"""
 import syslog
 import json
 from redis import StrictRedis

@@ -1,5 +1,5 @@
 """
-.. module:: api.jobber_api.py
+.. module:: jobber.api.jobber_api.py
    :platform: Unix
    :synopsis: Implements the flask app and request handlers for the jobber api.
 

@@ -1,3 +1,12 @@
+"""
+.. module:: jobber.api.validator.py
+   :platform: Unix
+   :synopsis: Uses bravado_core to validate incoming json records against the swagger schema.
+
+.. moduleauthor:: Mark Betz <betz.mark@gmail.com>
+
+
+"""
 import os
 import json
 from jsonschema.exceptions import ValidationError
