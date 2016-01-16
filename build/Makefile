@@ -4,7 +4,8 @@ BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
 TAG ?= $(subst /,-,$(BRANCH))
 DOCKER_BUILD ?= docker build
 DOCKER_PUSH ?= docker push
-DOCKER_RUN ?= docker run -it
+DOCKER_RUN_DEBUG ?= docker run -it
+DOCKER_RUN ?= docker run -d
 DOCKER_CONTAINER_LIST ?= docker ps -a
 DOCKER_IMAGE_LIST ?= docker images
 DOCKER_RMI ?= docker rmi
@@ -38,7 +39,7 @@ run: stop
 	$(DOCKER_RUN) -h $(IMAGE_NAME) --name=$(IMAGE_NAME) --rm=true -p $(API_TEST_PORT):$(API_TEST_PORT) -p $(ADMIN_TEST_PORT):$(ADMIN_TEST_PORT) $(REGISTRY_BASE)/$(IMAGE_NAME):$(TAG)
 
 run-debug: stop
-	$(DOCKER_RUN) -h $(IMAGE_NAME) --name=$(IMAGE_NAME) -p $(API_TEST_PORT):$(API_TEST_PORT) -p $(ADMIN_TEST_PORT):$(ADMIN_TEST_PORT) $(REGISTRY_BASE)/$(IMAGE_NAME):$(TAG) /usr/local/bin/jobber/start-jobber.sh -d
+	$(DOCKER_RUN_DEBUG) -h $(IMAGE_NAME) --name=$(IMAGE_NAME) -p $(API_TEST_PORT):$(API_TEST_PORT) -p $(ADMIN_TEST_PORT):$(ADMIN_TEST_PORT) $(REGISTRY_BASE)/$(IMAGE_NAME):$(TAG) /usr/local/bin/jobber/start-jobber.sh -d
 
 .run-test:
 	cd ../
