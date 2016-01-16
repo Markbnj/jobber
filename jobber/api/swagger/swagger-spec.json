@@ -424,6 +424,13 @@
                         "in": "query",
                         "required": false,
                         "description": "number of items returned from result set"
+                    },
+                    {
+                        "name": "name",
+                        "type": "string",
+                        "in": "query",
+                        "required": false,
+                        "description": "optional name filter"
                     }
                 ],
                 "responses": {
@@ -449,21 +456,27 @@
                 ],
                 "parameters": [
                     {
-                        "name": "job",
+                        "name": "jobs",
                         "schema": {
-                            "$ref": "#/definitions/Job"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Job"
+                            }
                         },
                         "in": "body",
                         "required": true,
-                        "description": "the new data for the job"
+                        "description": "json data for 1 .. n jobs"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "Succeeded",
                         "schema": {
-                            "type": "string",
-                            "description": "job_id of the new job"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            },
+                            "description": "list of job ids in same order as input document"
                         }
                     },
                     "500": {
@@ -533,7 +546,7 @@
         },
         "/jobs/{job_id}": {
             "get": {
-                "summary": "get a specific scheduled job",
+                "summary": "get a specific scheduled job by id",
                 "description": "Returns the description of a specific job\n",
                 "tags": [
                     "Jobs"
@@ -566,7 +579,7 @@
                 }
             },
             "put": {
-                "summary": "amend a specific scheduled job",
+                "summary": "amend a specific scheduled job by id",
                 "description": "Updates the definition of a job\n",
                 "tags": [
                     "Jobs"
@@ -605,7 +618,7 @@
                 }
             },
             "delete": {
-                "summary": "remove a scheduled job",
+                "summary": "remove a scheduled job by id",
                 "description": "Removes a scheduled job by job_id. This will not interrupt a running job.\n",
                 "tags": [
                     "Jobs"
