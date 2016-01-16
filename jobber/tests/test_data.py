@@ -26,7 +26,7 @@ job = """{
     }],
     "schedule": {
         "description":"every five minutes",
-        "minutes":"5",
+        "minutes":"/5",
         "hours":"*",
         "dayOfMonth":"*",
         "month":"*",
