@@ -11,7 +11,7 @@ import argparse
 import syslog
 import json
 from flask import Flask, request, make_response
-from jobs import add_job, get_jobs, job_results, get_job, delete_job, update_job
+from jobs import add_jobs, get_jobs, job_results, get_job, delete_job, update_job
 from api_error import BadRequestError, NotFoundError, InternalError
 import config
 from validator import get_swagger_spec
@@ -109,7 +109,7 @@ def get_postman():
 @app.route('/jobs/', methods=['GET', 'POST'])
 def get_post_jobs():
     """ Request handler for /jobs/ path.
-    
+
     GET:  returns the list of scheduled Jobs
     Args:
         None
@@ -117,18 +117,18 @@ def get_post_jobs():
     Returns:
         PagedJobs (str):  A list of Jobs with paging metadata as json
 
-    POST:  adds a scheduled Job to the jobs list
+    POST:  adds one or more scheduled Jobs to the jobs list
     Args:
-        job (str):  the Job to be added as json
+        jobs (list):  the Jobs to be added as a list
 
     Returns:
-        Nothing : if response status >= 200 and <=499
+        Job Ids (list) : new job ids in received order if response status >= 200 and <=499
         Error (str):  json error if response status >=500
     """
     if request.method == 'POST':
-        job = request.json
+        jobs = request.json
         try:
-            return _make_response(response=add_job(job))
+            return _make_response(response=add_jobs(jobs))
         except BadRequestError as e:
             return _make_error(400, e.message)
         except Exception as e:
@@ -136,10 +136,12 @@ def get_post_jobs():
     else:
         start_pos = request.args.get('start_pos', None)
         item_count = request.args.get('item_count', None)
+        name = request.args.get('name', None)
         try:
             return _make_response(response=get_jobs(
                     start_pos=start_pos,
-                    item_count=item_count))
+                    item_count=item_count,
+                    name=name))
         except BadRequestError as e:
             return _make_error(400, e.message)
         except Exception as e:
@@ -168,9 +170,9 @@ def get_jobs_results():
     try:
         return _make_response(response=job_results(
                 job_id=None,
-                start_time=start_time, 
-                end_time=end_time, 
-                start_pos=start_pos, 
+                start_time=start_time,
+                end_time=end_time,
+                start_pos=start_pos,
                 item_count=item_count))
     except BadRequestError as e:
         return _make_error(400, e.message)
@@ -196,7 +198,7 @@ def get_put_delete_job(job_id):
 
     Body:
         job:  job data in json format.
-    
+
     Returns:
         Nothing:  if response status >= 200 and <= 499.
         Error (str):  json error if response status >= 500
@@ -259,15 +261,15 @@ def get_job_results(job_id):
     try:
         return _make_response(response=job_results(
                 job_id=job_id,
-                start_time=start_time, 
-                end_time=end_time, 
-                start_pos=start_pos, 
+                start_time=start_time,
+                end_time=end_time,
+                start_pos=start_pos,
                 item_count=item_count))
     except BadRequestError as e:
         return _make_error(400, e.message)
     except Exception as e:
         return _make_error(500, e.message)
-    
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="jobber api service")

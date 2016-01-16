@@ -19,8 +19,9 @@ REDIS_HOST = 'localhost'
 REDIS_PORT = 6379
 
 
-def add_job(job):
-    validate_job(job)
+def add_jobs(jobs):
+    for job in jobs:
+        validate_job(job)
     rd = _get_redis()
 
     # hash the name
@@ -31,7 +32,7 @@ def add_job(job):
     return job
 
 
-def get_jobs(start_pos=None, item_count=None):
+def get_jobs(start_pos=None, item_count=None, name=None):
     rd = _get_redis()
     # read and deserialize the list of jobs from redis
     # optionally offset to start_pos
