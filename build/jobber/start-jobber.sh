@@ -5,7 +5,7 @@ debug=false
 function help {
     echo "Starts the jobber services inside the container, optionally enabling"
     echo "interactive debugging."
-    echo 
+    echo
     echo "Usage: `basename $0` [-h] [-d]"
     echo
     echo "Options:"
@@ -43,9 +43,9 @@ if $debug; then
     echo "Use ./debug-api to start the API services interactively (ctrl-c to exit)"
     echo "Use ./debug-admin to start the admin services interactively (ctrl-c to exit)"
     cd /usr/local/bin/jobber
+    /bin/bash
 else
     # run the services in production mode
     logger -t 'jobber startup' -p local0.info "jobber services starting in production mode"
-    /usr/local/bin/supervisord -c /etc/supervisord.conf
+    /usr/local/bin/supervisord -n -c /etc/supervisord.conf
 fi
-/bin/bash
