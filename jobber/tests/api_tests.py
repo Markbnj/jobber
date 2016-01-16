@@ -7,7 +7,7 @@
 
 .. note:: To set up and run these tests use the `make test` makefile target.
    The test methods expect the container to be running at the address in
-   os.environ['JBR_API_TEST_HOST'] and os.environ['JBR_API_TEST_PORT']
+   os.environ['TEST_HOST'] and os.environ['API_TEST_PORT']
 
 
 """
