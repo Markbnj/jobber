@@ -36,14 +36,13 @@ stop:
 	($(DOCKER_CONTAINER_LIST) | awk '$$NF == "$(IMAGE_NAME)" {exit 1}') || $(DOCKER_RM) $(IMAGE_NAME)
 
 run: stop
-	$(DOCKER_RUN) -h $(IMAGE_NAME) --name=$(IMAGE_NAME) --rm=true -p $(API_TEST_PORT):$(API_TEST_PORT) -p $(ADMIN_TEST_PORT):$(ADMIN_TEST_PORT) $(REGISTRY_BASE)/$(IMAGE_NAME):$(TAG)
+	$(DOCKER_RUN) -h $(IMAGE_NAME) --name=$(IMAGE_NAME) -p $(API_TEST_PORT):$(API_TEST_PORT) -p $(ADMIN_TEST_PORT):$(ADMIN_TEST_PORT) $(REGISTRY_BASE)/$(IMAGE_NAME):$(TAG)
 
 run-debug: stop
-	$(DOCKER_RUN_DEBUG) -h $(IMAGE_NAME) --name=$(IMAGE_NAME) -p $(API_TEST_PORT):$(API_TEST_PORT) -p $(ADMIN_TEST_PORT):$(ADMIN_TEST_PORT) $(REGISTRY_BASE)/$(IMAGE_NAME):$(TAG) /usr/local/bin/jobber/start-jobber.sh -d
+	$(DOCKER_RUN_DEBUG) -h $(IMAGE_NAME) --rm=true --name=$(IMAGE_NAME) -p $(API_TEST_PORT):$(API_TEST_PORT) -p $(ADMIN_TEST_PORT):$(ADMIN_TEST_PORT) $(REGISTRY_BASE)/$(IMAGE_NAME):$(TAG) /usr/local/bin/jobber/start-jobber.sh -d
 
 .run-test:
-	cd ../
-	nosetests -v -w jobber/tests/
+	cd ../ && nosetests -v -w jobber/tests/
 
 test: run .run-test stop
 
