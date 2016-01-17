@@ -9,27 +9,46 @@
 """
 import syslog
 import json
+import hashlib
 from redis import StrictRedis
-from crontabs import add_job, remove_job, sync_jobs
+from crontabs import add_job_crontab, remove_job_crontab, sync_all_crontabs
 from api_error import BadRequestError, NotFoundError, InternalError
 from validator import validate_job
 
 
 REDIS_HOST = 'localhost'
 REDIS_PORT = 6379
+REDIS_JOB_DB = 0
+
+
+# This module should also create a threadworker that syncs the job
+# crontabs every config.SYNC_CRONTABS_SECS seconds.
 
 
 def add_jobs(jobs):
-    for job in jobs:
-        validate_job(job)
-    rd = _get_redis()
+    """ Adds one or more scheduled jobs to the database.
 
-    # hash the name
-    # assert that the hash is not in redis
-    # if it is throw BadRequestError with relevant msg
-    # insert job into redis at hash/key
-    # add job to crontab
-    return job
+    Args:
+        jobs (list):  list of Jobs to be added
+
+    Returns:
+        job_ids (list):  list of the resulting job_ids in added order.
+
+    Raises:
+        api_error.BadRequestError
+
+    """
+    job_ids = []
+    with _get_redis() as rd:
+        for job in jobs:
+            validate_job(job)
+            job_id = hashlib.sha1(job['name']).hexdigest()
+            if rd.exists(job_id):
+                raise BadRequestError("Job named {} already exists".format(job['name']))
+            rd.set(job_id, json.dumps(job))
+            add_job_crontab(job)
+            job_ids.append(job_id)
+    return job_ids
 
 
 def get_jobs(start_pos=None, item_count=None, name=None):
@@ -79,7 +98,7 @@ def update_job(job_id, job):
 
 def _get_redis():
     try:
-        return StrictRedis(host=REDIS_HOST, port=REDIS_PORT)
+        return StrictRedis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_JOB_DB)
     except Exception as e:
         syslog.syslog(syslog.LOG_ERR, "{}".format(e))
         raise InternalError("Failed to create database interface")
