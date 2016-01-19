@@ -1,3 +1,4 @@
+SHELL = /bin/bash
 REGISTRY_BASE ?= markbnj
 IMAGE_NAME ?= jobber
 BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
@@ -43,6 +44,8 @@ run-debug: stop
 	$(DOCKER_RUN_DEBUG) -h $(IMAGE_NAME) --rm=true --name=$(IMAGE_NAME) -p $(API_TEST_PORT):$(API_TEST_PORT) -p $(ADMIN_TEST_PORT):$(ADMIN_TEST_PORT) $(REGISTRY_BASE)/$(IMAGE_NAME):$(TAG) /usr/local/bin/jobber/start-jobber.sh -d
 
 .run-test:
+	echo "run-test: waiting for container to start ..." && \
+	until $$(curl --silent --output /dev/null http://$(TEST_HOST):$(API_TEST_PORT)/settings/); do printf "." && sleep 2; done
 	cd ../ && nosetests -v -w jobber/tests/
 
 test: run .run-test stop
