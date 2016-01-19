@@ -10,10 +10,10 @@
 import syslog
 import json
 import hashlib
-from redis import StrictRedis
-from crontabs import add_job_crontab, remove_job_crontab, sync_all_crontabs
-from api_error import BadRequestError, NotFoundError, InternalError
-from validator import validate_job
+import redis
+import crontabs
+import api_error
+import validator
 
 
 REDIS_HOST = 'localhost'
@@ -39,15 +39,15 @@ def add_jobs(jobs):
 
     """
     job_ids = []
-    with _get_redis() as rd:
-        for job in jobs:
-            validate_job(job)
-            job_id = hashlib.sha1(job['name']).hexdigest()
-            if rd.exists(job_id):
-                raise BadRequestError("Job named {} already exists".format(job['name']))
-            rd.set(job_id, json.dumps(job))
-            add_job_crontab(job)
-            job_ids.append(job_id)
+    rd = _get_redis()
+    for job in jobs:
+        validator.validate_job(job)
+        job_id = hashlib.sha1(job['name']).hexdigest()
+        if rd.exists(job_id):
+            raise api_error.BadRequestError("Job named {} already exists".format(job['name']))
+        rd.set(job_id, json.dumps(job))
+        crontabs.add_job(job)
+        job_ids.append(job_id)
     return job_ids
 
 
@@ -86,7 +86,7 @@ def delete_job(job_id):
 
 
 def update_job(job_id, job):
-    validate_job(job)
+    validator.validate_job(job)
     rd = _get_redis()
     # assert that the key is in redis
     # if it isn't raise NotFoundError
@@ -98,7 +98,7 @@ def update_job(job_id, job):
 
 def _get_redis():
     try:
-        return StrictRedis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_JOB_DB)
+        return redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_JOB_DB)
     except Exception as e:
         syslog.syslog(syslog.LOG_ERR, "{}".format(e))
-        raise InternalError("Failed to create database interface")
+        raise api_error.InternalError("Failed to create database interface")
