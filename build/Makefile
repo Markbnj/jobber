@@ -10,9 +10,10 @@ DOCKER_CONTAINER_LIST ?= docker ps -a
 DOCKER_IMAGE_LIST ?= docker images
 DOCKER_RMI ?= docker rmi
 DOCKER_RM ?= docker rm -f
-TEST_HOST ?= localhost
-API_TEST_PORT ?= 5000
-ADMIN_TEST_PORT ?= 8080
+
+export TEST_HOST ?= localhost
+export API_TEST_PORT ?= 5000
+export ADMIN_TEST_PORT ?= 8080
 
 clean-base:
 	rm -f base/image-build.log
