@@ -9,3 +9,7 @@ Major components:
 - Job runner; python; invoked by cron, launches job containers, monitors run results
 - Orchestration layer; python; wrapper around docker compose and kubernetes APIs.
 - Build tooling; make and bash; tools to build and push to docker/gcloud.
+
+Sources:
+
+http://jpetazzo.github.io/2016/04/03/one-container-to-rule-them-all/
